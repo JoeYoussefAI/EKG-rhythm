@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rhythm strips — cardiology simulation prep</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#16202B; --ink-2:#4A5763; --ink-3:#7D8792;
+  --page:#EDECE8; --card:#FFFFFF; --rule:#D7D5CD;
+  --pulse:#9C2B2B; --pulse-soft:#F6E9E7;
+  --calm:#25605A; --calm-soft:#E4EFEC;
+  --focus:#1F5FA8;
+  --sans:"IBM Plex Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,monospace;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--page);color:var(--ink);font-family:var(--sans);
+  font-size:16px;line-height:1.6;font-weight:400}
+.wrap{max-width:1080px;margin:0 auto;padding:28px 20px 64px}
+
+header{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 16px;margin-bottom:20px}
+h1{font-size:21px;font-weight:600;margin:0;letter-spacing:-0.01em}
+header p{margin:0;color:var(--ink-2);font-size:14px}
+
+.stage{background:var(--card);border:1px solid var(--rule);border-radius:6px;
+  padding:14px 14px 4px;margin-bottom:14px}
+.stage svg{display:block;width:100%;height:auto}
+
+.readout{display:flex;flex-wrap:wrap;gap:0;border:1px solid var(--rule);
+  border-radius:6px;background:var(--card);margin-bottom:22px;overflow:hidden}
+.readout div{flex:1 1 25%;min-width:150px;padding:11px 14px;border-right:1px solid var(--rule)}
+.readout div:last-child{border-right:0}
+.readout dt{margin:0 0 2px;font-size:12px;color:var(--ink-3);font-weight:500}
+.readout dd{margin:0;font-size:14px;line-height:1.45}
+.readout dd.num{font-family:var(--mono);font-size:15px}
+.readout.masked dd{color:transparent;background:linear-gradient(var(--rule),var(--rule))
+  no-repeat center/100% 9px;border-radius:2px}
+
+nav.modes{display:flex;gap:2px;border-bottom:1px solid var(--rule);margin-bottom:22px}
+nav.modes button{appearance:none;background:none;border:0;border-bottom:2px solid transparent;
+  font:inherit;font-size:15px;color:var(--ink-2);padding:8px 2px;margin-right:26px;cursor:pointer}
+nav.modes button[aria-selected="true"]{color:var(--ink);font-weight:500;border-bottom-color:var(--pulse)}
+
+.cols{display:grid;grid-template-columns:236px 1fr;gap:32px;align-items:start}
+@media(max-width:760px){.cols{grid-template-columns:1fr;gap:24px}}
+
+.group{margin:0 0 18px}
+.group h2{font-size:12px;font-weight:500;color:var(--ink-3);margin:0 0 7px;letter-spacing:.01em}
+.group ul{list-style:none;margin:0;padding:0}
+.group li{margin:0 0 1px}
+.group button{appearance:none;width:100%;text-align:left;background:none;border:0;
+  border-left:2px solid transparent;font:inherit;font-size:14.5px;color:var(--ink-2);
+  padding:5px 10px;cursor:pointer;border-radius:0 3px 3px 0}
+.group button:hover{background:var(--card);color:var(--ink)}
+.group button[aria-current="true"]{background:var(--card);border-left-color:var(--pulse);
+  color:var(--ink);font-weight:500}
+
+.notes h2{font-size:19px;font-weight:600;margin:0 0 3px;letter-spacing:-0.01em}
+.notes .tag{font-size:13px;color:var(--ink-3);margin:0 0 16px}
+.notes h3{font-size:13px;font-weight:500;color:var(--ink-3);margin:20px 0 6px}
+.notes ul{margin:0;padding-left:18px}
+.notes li{margin-bottom:6px;max-width:62ch}
+.notes p{margin:0 0 8px;max-width:62ch}
+.pill{display:inline-block;font-size:13px;padding:3px 9px;border-radius:3px;
+  background:var(--pulse-soft);color:var(--pulse);font-weight:500}
+.pill.ok{background:var(--calm-soft);color:var(--calm)}
+
+.toggle{display:inline-flex;align-items:center;gap:7px;font-size:13.5px;color:var(--ink-2);
+  cursor:pointer;user-select:none;margin-bottom:14px}
+.toggle input{margin:0;accent-color:var(--pulse)}
+
+.q{max-width:64ch}
+.q h2{font-size:17px;font-weight:500;margin:0 0 14px}
+.opts{display:grid;gap:8px;margin-bottom:18px}
+.opt{appearance:none;text-align:left;font:inherit;font-size:15px;background:var(--card);
+  border:1px solid var(--rule);border-radius:5px;padding:11px 14px;cursor:pointer;color:var(--ink)}
+.opt:hover:not(:disabled){border-color:var(--ink-3)}
+.opt:disabled{cursor:default}
+.opt.right{border-color:var(--calm);background:var(--calm-soft);font-weight:500}
+.opt.wrong{border-color:var(--pulse);background:var(--pulse-soft)}
+.verdict{font-size:15px;margin:0 0 14px;max-width:62ch}
+.verdict strong{font-weight:600}
+.btn{appearance:none;font:inherit;font-size:15px;background:var(--ink);color:#fff;border:0;
+  border-radius:5px;padding:10px 20px;cursor:pointer}
+.btn.ghost{background:none;color:var(--ink-2);border:1px solid var(--rule)}
+.score{font-family:var(--mono);font-size:13px;color:var(--ink-3);margin-bottom:16px}
+.stem{background:var(--card);border-left:2px solid var(--ink-3);padding:10px 14px;
+  margin:0 0 16px;font-size:14.5px;max-width:62ch}
+button:focus-visible,.opt:focus-visible,input:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+footer{margin-top:44px;padding-top:14px;border-top:1px solid var(--rule);
+  font-size:13px;color:var(--ink-3);max-width:70ch}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>Rhythm strips</h1>
+  <p>Cardiology simulation prep · MED II</p>
+</header>
+
+<div class="stage" id="stage"></div>
+<dl class="readout" id="readout"></dl>
+
+<nav class="modes" role="tablist">
+  <button role="tab" id="tab-learn" aria-selected="true" onclick="setMode('learn')">Learn</button>
+  <button role="tab" id="tab-quiz" aria-selected="false" onclick="setMode('quiz')">Test yourself</button>
+</nav>
+
+<div id="learn">
+  <div class="cols">
+    <div>
+      <label class="toggle"><input type="checkbox" id="annot" checked onchange="draw()"> Show measurements</label>
+      <div id="list"></div>
+    </div>
+    <div class="notes" id="notes"></div>
+  </div>
+</div>
+
+<div id="quiz" hidden>
+  <div class="score" id="score"></div>
+  <div class="q" id="qbody"></div>
+</div>
+
+<footer id="foot"></footer>
+</div>
+
+<script>
+/* ---------- waveform engine ---------- */
+const PPS=125, PPMV=50, X0=25, YB=120, TEND=6;
+const QRS_N=[[0,0],[.015,-.06],[.045,1.25],[.07,-.22],[.09,0]];
+const QRS_S=[[0,0],[.015,-.05],[.04,.95],[.065,-.20],[.085,0]];
+const QRS_W=[[0,0],[.025,-.18],[.065,.95],[.11,-.80],[.15,-.15],[.17,0]];
+const QRS_E=[[0,0],[.03,-.20],[.075,.85],[.125,-.60],[.16,0]];
+
+function pw(u,pts){ if(u<0||u>pts[pts.length-1][0])return 0;
+  for(let i=1;i<pts.length;i++){ if(u<=pts[i][0]){ const a=pts[i-1],b=pts[i];
+    return a[1]+(b[1]-a[1])*(u-a[0])/(b[0]-a[0]); } } return 0; }
+const bump=(u,d,a)=>(u<0||u>d)?0:a*Math.sin(Math.PI*u/d);
+const P=(t,a=.16,d=.09)=>({t,dur:d,f:u=>bump(u,d,a)});
+const Q=(t,p=QRS_N)=>({t,dur:p[p.length-1][0],f:u=>pw(u,p)});
+const TW=(t,a=.30,d=.17)=>({t,dur:d,f:u=>bump(u,d,a)});
+function beat(c,t,pr,o={}){ const q=o.qrs||QRS_N; c.push(P(t,o.pAmp??.16));
+  if(pr===null)return; const qt=t+pr; c.push(Q(qt,q));
+  c.push(TW(qt+q[q.length-1][0]+.09,o.tAmp??.30)); }
+function mulberry(s){return function(){s|=0;s=s+0x6D2B79F5|0;
+  let t=Math.imul(s^s>>>15,1|s);t=t+Math.imul(t^t>>>7,61|t)^t;
+  return((t^t>>>14)>>>0)/4294967296;};}
+
+const B={
+ nsr(){const c=[],a=[];for(let t=.18;t<TEND;t+=.80)beat(c,t,.16);
+   a.push({k:'br',t1:.98,t2:1.14,l:'PR 0.16 s'});return{c,a};},
+ sbrad(){const c=[],a=[];for(let t=.25;t<TEND;t+=1.33)beat(c,t,.16);
+   a.push({k:'br',t1:1.58,t2:2.91,l:'R\u2013R 1.33 s'});return{c,a};},
+ stach(){const c=[],a=[];for(let t=.15;t<TEND;t+=.48)beat(c,t,.13,{tAmp:.22});
+   a.push({k:'mk',t:1.11,l:'a P before every QRS'});return{c,a};},
+ avb1(){const c=[],a=[];for(let t=.18;t<TEND;t+=.80)beat(c,t,.28);
+   a.push({k:'br',t1:.98,t2:1.26,l:'PR 0.28 s'});
+   a.push({k:'br',t1:1.78,t2:2.06,l:'PR 0.28 s'});return{c,a};},
+ mobitz1(){const c=[],a=[],PP=.85,pr=[.16,.26,.36,null];let i=0;
+   for(let t=.2;t<TEND;t+=PP,i++){const p=pr[i%4];beat(c,t,p);
+     if(p!==null&&i<3)a.push({k:'br',t1:t,t2:t+p,l:p.toFixed(2)+' s'});
+     if(p===null)a.push({k:'mk',t:t,l:'P, no QRS'});}return{c,a};},
+ mobitz2(){const c=[],a=[],PP=.80;let i=0;
+   for(let t=.2;t<TEND;t+=PP,i++){const d=(i%3===2);beat(c,t,d?null:.20);
+     if(!d&&i<2)a.push({k:'br',t1:t,t2:t+.20,l:'0.20 s'});
+     if(d)a.push({k:'mk',t:t,l:'P, no QRS'});}return{c,a};},
+ chb(){const c=[],a=[];
+   for(let t=.12;t<TEND;t+=.68)c.push(P(t,.18));
+   for(let t=.40;t<TEND;t+=1.45){c.push(Q(t,QRS_E));c.push(TW(t+.26,-.28,.20));}
+   a.push({k:'mk',t:1.48,l:'P marches through'});
+   a.push({k:'mk',t:3.29,l:'unrelated to QRS'});return{c,a};},
+ svt(){const c=[],a=[];
+   for(let t=.12;t<TEND;t+=.34){c.push(Q(t,QRS_S));c.push(TW(t+.14,.20,.12));}
+   a.push({k:'br',t1:1.14,t2:1.48,l:'R\u2013R 0.34 s = 176/min'});
+   a.push({k:'mk',t:3.18,l:'no P waves seen'});return{c,a};},
+ flutter(){const c=[],a=[];
+   for(let t=.05;t<TEND;t+=.20)c.push({t,dur:.20,f:u=>pw(u,[[0,.13],[.16,-.13],[.20,.13]])});
+   for(let t=.25;t<TEND;t+=.40){c.push(Q(t,QRS_S));c.push(TW(t+.145,.14,.12));}
+   a.push({k:'mk',t:1.05,l:'sawtooth flutter waves'});
+   a.push({k:'br',t1:2.65,t2:3.05,l:'2 F waves per QRS'});return{c,a};},
+ afib(){const c=[],a=[],rr=[.55,.88,.44,.74,1.02,.50,.82,.62,.95,.58];
+   let t=.20,i=0;while(t<TEND){c.push(Q(t,QRS_N));c.push(TW(t+.18,.24));t+=rr[i%rr.length];i++;}
+   a.push({k:'br',t1:.20,t2:.75,l:'0.55 s'});
+   a.push({k:'br',t1:1.63,t2:2.65,l:'1.02 s'});
+   a.push({k:'mk',t:4.20,l:'no P waves'});
+   const r=mulberry(7),n=[];for(let k=0;k<1600;k++)n.push(r()-.5);
+   return{c,a,base:tt=>{const ix=tt*90,i0=Math.floor(ix),fr=ix-i0;
+     return (n[i0%1600]*(1-fr)+n[(i0+1)%1600]*fr)*.09+.03*Math.sin(2*Math.PI*7.3*tt);}};},
+ vt(){const c=[],a=[];
+   for(let t=.10;t<TEND;t+=.38){c.push(Q(t,QRS_W));c.push(TW(t+.20,-.30,.16));}
+   a.push({k:'br',t1:.10,t2:.27,l:'QRS 0.17 s'});
+   a.push({k:'mk',t:2.76,l:'broad, regular, uniform'});return{c,a};},
+ vf(){return{c:[],a:[{k:'mk',t:3.0,l:'no organised QRS'}],base:t=>{
+   const e=.72+.28*Math.sin(2*Math.PI*.9*t+.4);
+   return e*(.34*Math.sin(2*Math.PI*4.7*t)+.24*Math.sin(2*Math.PI*6.3*t+1.1)
+     +.17*Math.sin(2*Math.PI*8.9*t+2.3)+.10*Math.sin(2*Math.PI*11.9*t+.7));}};}
+};
+
+function pathFor(key){
+  const {c,base}=B[key]();let d='';
+  for(let t=0;t<=TEND;t+=.004){
+    let v=base?base(t):0;
+    for(const k of c){const u=t-k.t;if(u>=0&&u<=k.dur)v+=k.f(u);}
+    d+=(d?'L':'M')+(X0+t*PPS).toFixed(1)+' '+(YB-v*PPMV).toFixed(1)+' ';
+  }
+  return d;
+}
+const xt=t=>X0+t*PPS;
+
+function stripSVG(key,showAnn){
+  const {a}=B[key](), d=pathFor(key);
+  let ann='';
+  if(showAnn) for(const o of a){
+    if(o.k==='br'){const x1=xt(o.t1),x2=xt(o.t2),m=(x1+x2)/2;
+      ann+=`<path d="M${x1} 134V172M${x2} 134V172" stroke="#9C2B2B" stroke-width=".6" stroke-dasharray="2 3" opacity=".55" fill="none"/>`
+        +`<path d="M${x1} 172v6h${(x2-x1).toFixed(1)}v-6" fill="none" stroke="#9C2B2B" stroke-width="1"/>`
+        +`<text x="${m.toFixed(1)}" y="193" text-anchor="middle" fill="#9C2B2B" font-family="IBM Plex Mono,monospace" font-size="10.5">${o.l}</text>`;
+    } else {const x=xt(o.t);
+      ann+=`<path d="M${x} 128V178" stroke="#9C2B2B" stroke-width=".6" stroke-dasharray="2 3" opacity=".55" fill="none"/>`
+        +`<text x="${x.toFixed(1)}" y="193" text-anchor="middle" fill="#9C2B2B" font-family="IBM Plex Sans,sans-serif" font-size="11">${o.l}</text>`;}
+  }
+  return `<svg viewBox="0 0 800 205" role="img" aria-label="Rhythm strip">
+<defs>
+<pattern id="sg" width="5" height="5" patternUnits="userSpaceOnUse" x="25" y="20">
+<path d="M5 0V5M0 5H5" stroke="#F2CBC6" stroke-width=".5" fill="none"/></pattern>
+<pattern id="lg" width="25" height="25" patternUnits="userSpaceOnUse" x="25" y="20">
+<path d="M25 0V25M0 25H25" stroke="#DF9A93" stroke-width="1" fill="none"/></pattern>
+</defs>
+<rect x="2" y="2" width="796" height="201" rx="4" fill="#FFFBFA" stroke="#E8DAD7"/>
+<rect x="25" y="20" width="750" height="150" fill="url(#sg)"/>
+<rect x="25" y="20" width="750" height="150" fill="url(#lg)"/>
+<rect x="25" y="20" width="750" height="150" fill="none" stroke="#DF9A93"/>
+<path id="trace" d="${d}" fill="none" stroke="#171717" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>
+${ann}
+<text x="775" y="199" text-anchor="end" fill="#B09B98" font-family="IBM Plex Mono,monospace" font-size="9.5">25 mm/s &#183; 10 mm/mV</text>
+</svg>`;
+}
+
+/* ---------- content ---------- */
+const R={
+ nsr:{n:'Normal sinus rhythm',g:'Baseline',rate:'75/min',reg:'Regular',
+  qrs:'Narrow, 0.08 s',p:'One P per QRS, PR 0.16 s',
+  f:['This is your reference. Every other strip on this page is a deviation from it.',
+     'P wave upright and identical each beat; PR constant and no longer than one large square.',
+     'QRS under three small squares.'],
+  c:'Nothing — but you cannot call anything abnormal until you know what this looks like.',
+  m:'None.',stem:'Comfortable, BP 128/76.',tx:'none'},
+
+ sbrad:{n:'Sinus bradycardia',g:'Bradycardias',rate:'45/min',reg:'Regular',
+  qrs:'Narrow, 0.08 s',p:'One P per QRS, PR normal',
+  f:['The conduction system is intact — the sinus node is simply firing slowly.',
+     'Often physiological: athletes, sleep, vagal tone.',
+     'Pathological causes: beta-blockers, calcium-channel blockers, digoxin, inferior MI, hypothyroidism, hypothermia, raised intracranial pressure, hyperkalaemia.'],
+  c:'A junctional escape rhythm looks similar but has no P waves at all.',
+  m:'Nothing if asymptomatic. If symptomatic: atropine 1 mg IV, repeated to a maximum of 3 mg, then pacing.',
+  stem:'Rate 42, BP 78/44, drowsy and clammy. Atropine 3 mg has been given without effect.',tx:'pace'},
+
+ avb1:{n:'First-degree AV block',g:'Bradycardias',rate:'75/min',reg:'Regular',
+  qrs:'Narrow, 0.08 s',p:'One P per QRS, PR 0.28 s',
+  f:['PR interval longer than 0.20 s — more than one large square.',
+     'Every P wave still conducts. Nothing is dropped.',
+     'Benign in isolation and needs no treatment.'],
+  c:'Nothing, provided you have checked carefully that no beats are dropped. If a QRS is missing, it is second-degree block.',
+  m:'None in isolation. Review the drug chart.',
+  stem:'Asymptomatic, BP 124/70, here for a pre-operative check.',tx:'none'},
+
+ mobitz1:{n:'Mobitz I (Wenckebach)',g:'Bradycardias',rate:'53/min',reg:'Regularly irregular',
+  qrs:'Narrow, 0.08 s',p:'PR lengthens, then a QRS is dropped',
+  f:['The PR interval gets progressively longer until a P wave fails to conduct, then the cycle restarts.',
+     'Longer, longer, longer, drop — then you have a Wenckebach.',
+     'The block is at the AV node. Usually benign, often responds to atropine, and rarely progresses to complete block.'],
+  c:'Mobitz II. The whole distinction is whether the PR interval lengthens before the dropped beat — measure it, do not eyeball it.',
+  m:'Observe if asymptomatic. Atropine if symptomatic.',
+  stem:'Rate 38, BP 82/50, presyncopal. Atropine has not helped.',tx:'pace'},
+
+ mobitz2:{n:'Mobitz II',g:'Bradycardias',rate:'53/min',reg:'Regularly irregular',
+  qrs:'Narrow, 0.08 s',p:'PR constant, then a QRS is suddenly dropped',
+  f:['The PR interval on conducted beats is constant. Then a QRS simply fails to appear, with no warning.',
+     'The block is below the AV node, in the His–Purkinje system.',
+     'This is the dangerous one. It progresses unpredictably to complete block and asystole, and it responds poorly to atropine.'],
+  c:'Mobitz I. Measure the PR intervals before the dropped beat — if they are identical, this is Mobitz II.',
+  m:'Pacing and cardiology involvement. Do not simply observe.',
+  stem:'Rate 40, presyncopal, BP 88/54.',tx:'pace'},
+
+ chb:{n:'Third-degree (complete) heart block',g:'Bradycardias',rate:'41/min ventricular, 88/min atrial',
+  reg:'Regular, but P and QRS are independent',qrs:'Broad escape, 0.16 s',
+  p:'Present and regular, entirely unrelated to the QRS',
+  f:['Complete AV dissociation. P waves and QRS complexes are each regular but march through the strip independently of one another.',
+     'The PR interval varies randomly because there is no relationship to vary around.',
+     'A junctional escape gives a narrow QRS at 40–60/min and is relatively stable. A ventricular escape, as here, gives a broad QRS at 20–40/min and is slow and liable to fail.',
+     'Common after inferior MI.'],
+  c:'A very slow Mobitz II. Look at whether the P–P and R–R intervals are each regular but unrelated — that is complete block.',
+  m:'Pacing. Atropine is unlikely to work with a broad escape rhythm.',
+  stem:'Rate 38, BP 80/48, confused.',tx:'pace'},
+
+ stach:{n:'Sinus tachycardia',g:'Narrow-complex tachycardias',rate:'125/min',reg:'Regular',
+  qrs:'Narrow, 0.08 s',p:'One P per QRS, PR normal',
+  f:['Normal P waves are visible before every QRS.',
+     'In an adult the rate is usually under 150, and it varies beat-to-beat and with the clinical situation.',
+     'This is a symptom, not a diagnosis. Find the cause — pain, fever, hypovolaemia, anaemia, sepsis, PE, thyrotoxicosis — and treat that.'],
+  c:'SVT. As the rate climbs towards 150 the P waves start hiding in the preceding T wave. Slow down and look for them.',
+  m:'Treat the underlying cause. Never cardiovert a compensatory sinus tachycardia.',
+  stem:'Febrile, BP 104/62, consolidation on chest X-ray.',tx:'none'},
+
+ svt:{n:'Supraventricular tachycardia',g:'Narrow-complex tachycardias',rate:'176/min',reg:'Regular',
+  qrs:'Narrow, 0.08 s',p:'None visible',
+  f:['Regular, narrow and fast — typically 150–250/min.',
+     'Metronomically regular: the R–R intervals do not vary at all.',
+     'P waves are buried in the QRS or appear retrogradely as a pseudo-R\u2032 in V1 or a pseudo-S wave in the inferior leads.',
+     'Onset and termination are abrupt — the patient can often tell you the exact second it started.'],
+  c:'Atrial flutter with 2:1 block, which sits at almost exactly 150. And VT, if the QRS is broad — a broad regular tachycardia is VT until proven otherwise.',
+  m:'Stable: modified Valsalva, then adenosine 6 mg by rapid push with a flush, then 12 mg. Unstable: synchronised cardioversion.',
+  stem:'BP 76/40, cold and confused. Vagal manoeuvres and adenosine have both failed.',tx:'sync'},
+
+ flutter:{n:'Atrial flutter with 2:1 conduction',g:'Narrow-complex tachycardias',
+  rate:'150/min ventricular, 300/min atrial',reg:'Regular',qrs:'Narrow, 0.08 s',
+  p:'Sawtooth flutter waves, two per QRS',
+  f:['A sawtooth baseline at an atrial rate of about 300, with every second impulse conducted.',
+     'A regular narrow tachycardia sitting at almost exactly 150 should make you hunt for flutter waves before anything else.',
+     'Adenosine will not usually terminate it, but the transient AV block it produces unmasks the flutter waves and gives you the diagnosis.'],
+  c:'SVT. The give-away is the rate pinned at 150 and the sawtooth baseline between QRS complexes.',
+  m:'Rate control and anticoagulation as for atrial fibrillation. Unstable: synchronised cardioversion.',
+  stem:'BP 84/50 with ischaemic chest pain.',tx:'sync'},
+
+ afib:{n:'Atrial fibrillation',g:'Narrow-complex tachycardias',rate:'~95/min, variable',
+  reg:'Irregularly irregular',qrs:'Narrow, 0.08 s',p:'Absent; chaotic baseline',
+  f:['No organised P waves anywhere, and a chaotic fibrillatory baseline.',
+     'Irregularly irregular — there is no pattern to the R–R intervals at all. Measure two or three of them and compare.',
+     'The commonest sustained arrhythmia you will meet, and a major source of stroke risk.'],
+  c:'Multifocal atrial tachycardia and frequent ectopics are also irregular, but both have visible P waves.',
+  m:'Rate or rhythm control, plus anticoagulation based on stroke risk. Unstable: synchronised cardioversion.',
+  stem:'New-onset AF at 165, BP 80/48, in pulmonary oedema.',tx:'sync'},
+
+ vt:{n:'Monomorphic ventricular tachycardia',g:'Broad-complex and arrest rhythms',
+  rate:'158/min',reg:'Regular',qrs:'Broad, 0.17 s',p:'None visible',
+  f:['Broad QRS of 0.12 s or more, regular, with every complex the same shape.',
+     'Features favouring VT over SVT with aberrancy: AV dissociation, capture beats, fusion beats, a very broad QRS, extreme axis deviation, and a history of structural heart disease or previous MI.',
+     'If the complexes vary in shape it is polymorphic VT; twisting around the baseline with a long QT is torsades de pointes, treated with intravenous magnesium.',
+     'VT may be with or without a pulse, and that distinction determines everything you do next.'],
+  c:'SVT with aberrancy. In an adult with cardiac risk factors, treat a broad regular tachycardia as VT — the reverse error is far more dangerous.',
+  m:'With a pulse and stable: amiodarone. With a pulse and unstable: synchronised cardioversion. Pulseless: defibrillate.',
+  stem:'The patient has a pulse. BP 82/48 with crushing chest pain.',tx:'sync'},
+
+ vf:{n:'Ventricular fibrillation',g:'Broad-complex and arrest rhythms',rate:'Not measurable',
+  reg:'Chaotic',qrs:'None identifiable',p:'None',
+  f:['Chaotic, disorganised electrical activity with no identifiable P waves, QRS complexes or T waves.',
+     'Amplitude may be coarse or fine. Fine VF can be mistaken for asystole — check the gain and the leads before you call it.',
+     'There is no coordinated contraction and therefore no cardiac output. VF is cardiac arrest: the patient will be unresponsive, not breathing normally, and pulseless.',
+     'Time to defibrillation is the strongest single determinant of survival.'],
+  c:'Artefact from a shivering or moving patient. The difference is that a patient with artefact is talking to you.',
+  m:'High-quality CPR and immediate unsynchronised defibrillation. Adrenaline 1 mg and amiodarone 300 mg after the third shock. Hunt the 4 Hs and 4 Ts.',
+  stem:'Unresponsive, not breathing, no central pulse.',tx:'defib'}
+};
+
+const TX={none:'No shock needed',sync:'Synchronised cardioversion',
+  defib:'Defibrillation, sync off',pace:'Pacing'};
+const TX_WHY={
+ none:'This rhythm does not call for electrical therapy. Treat the patient and the underlying cause.',
+ sync:'The patient has a pulse and an organised rhythm, so the shock must be timed to the R wave. An unsynchronised shock landing on a T wave can induce VF.',
+ defib:'There is no organised QRS to synchronise to. Sync must be off, or the machine will charge and then refuse to discharge while it waits for an R wave that never comes.',
+ pace:'The problem is too few beats, not a disorganised circuit. A shock has nothing to terminate — the ventricle needs to be driven.'};
+
+const GROUPS=['Baseline','Bradycardias','Narrow-complex tachycardias','Broad-complex and arrest rhythms'];
+const KEYS=Object.keys(R);
+let current='nsr', mode='learn';
+
+/* ---------- rendering ---------- */
+function draw(blind){
+  const showAnn = !blind && document.getElementById('annot').checked;
+  document.getElementById('stage').innerHTML = stripSVG(current, showAnn);
+  const p = document.querySelector('#trace');
+  if(p && !matchMedia('(prefers-reduced-motion: reduce)').matches){
+    const L = p.getTotalLength();
+    p.style.strokeDasharray = L; p.style.strokeDashoffset = L;
+    p.animate([{strokeDashoffset:L},{strokeDashoffset:0}],
+      {duration:900,easing:'linear',fill:'forwards'});
+  }
+  const r=R[current];
+  document.getElementById('readout').className = 'readout' + (blind?' masked':'');
+  document.getElementById('readout').innerHTML =
+    `<div><dt>Rate</dt><dd class="num">${r.rate}</dd></div>
+     <div><dt>Regularity</dt><dd>${r.reg}</dd></div>
+     <div><dt>QRS</dt><dd>${r.qrs}</dd></div>
+     <div><dt>P waves</dt><dd>${r.p}</dd></div>`;
+}
+
+function buildList(){
+  let h='';
+  for(const g of GROUPS){
+    h+=`<div class="group"><h2>${g}</h2><ul>`;
+    for(const k of KEYS) if(R[k].g===g)
+      h+=`<li><button onclick="pick('${k}')" aria-current="${k===current}">${R[k].n}</button></li>`;
+    h+='</ul></div>';
+  }
+  document.getElementById('list').innerHTML=h;
+}
+
+function notes(){
+  const r=R[current];
+  document.getElementById('notes').innerHTML=
+   `<h2>${r.n}</h2><p class="tag">${r.g}</p>
+    <h3>What you are looking at</h3><ul>${r.f.map(x=>`<li>${x}</li>`).join('')}</ul>
+    <h3>What it gets confused with</h3><p>${r.c}</p>
+    <h3>Management</h3><p>${r.m}</p>
+    <p><span class="pill${r.tx==='none'?' ok':''}">${TX[r.tx]}</span></p>`;
+}
+
+function pick(k){ current=k; buildList(); notes(); draw(false); }
+
+function setMode(m){
+  mode=m;
+  document.getElementById('tab-learn').setAttribute('aria-selected',m==='learn');
+  document.getElementById('tab-quiz').setAttribute('aria-selected',m==='quiz');
+  document.getElementById('learn').hidden = m!=='learn';
+  document.getElementById('quiz').hidden = m!=='quiz';
+  if(m==='quiz') newQ(); else { buildList(); notes(); draw(false); }
+}
+
+/* ---------- quiz ---------- */
+let asked=0, right=0, stage=0, qKey=null, opts=[];
+const NEIGHBOURS={
+ nsr:['sbrad','avb1','stach'], sbrad:['nsr','chb','mobitz2'],
+ avb1:['nsr','mobitz1','mobitz2'], mobitz1:['mobitz2','avb1','chb'],
+ mobitz2:['mobitz1','chb','avb1'], chb:['mobitz2','sbrad','mobitz1'],
+ stach:['svt','flutter','nsr'], svt:['flutter','stach','vt'],
+ flutter:['svt','afib','stach'], afib:['flutter','svt','vt'],
+ vt:['svt','vf','flutter'], vf:['vt','afib','svt']};
+
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));
+  [a[i],a[j]]=[a[j],a[i]];}return a;}
+
+function newQ(){
+  qKey = KEYS[Math.floor(Math.random()*KEYS.length)];
+  current = qKey; stage=0;
+  opts = shuffle([qKey, ...NEIGHBOURS[qKey]]);
+  draw(true); renderQ();
+}
+
+function renderQ(){
+  document.getElementById('score').textContent =
+    asked ? `${right} of ${asked} correct` : 'Name the rhythm, then choose the electrical therapy.';
+  if(stage===0){
+    document.getElementById('qbody').innerHTML =
+      `<h2>What is this rhythm?</h2><div class="opts">`+
+      opts.map(k=>`<button class="opt" onclick="answer1('${k}')">${R[k].n}</button>`).join('')+
+      `</div>`;
+  }
+}
+
+function answer1(k){
+  asked++; const ok = k===qKey; if(ok) right++;
+  draw(false);
+  const btns=[...document.querySelectorAll('.opt')];
+  btns.forEach(b=>{b.disabled=true;
+    if(b.textContent===R[qKey].n) b.classList.add('right');
+    else if(b.textContent===R[k].n) b.classList.add('wrong');});
+  const v=document.createElement('div');
+  v.className='verdict'; v.setAttribute('role','status');
+  v.innerHTML = ok
+    ? `<strong>Correct.</strong> ${R[qKey].f[0]}`
+    : `<strong>Not quite — this is ${R[qKey].n.toLowerCase()}.</strong> ${R[qKey].f[0]}`;
+  document.getElementById('qbody').appendChild(v);
+  const nx=document.createElement('button');
+  nx.className='btn'; nx.textContent='Continue'; nx.onclick=stage2;
+  document.getElementById('qbody').appendChild(nx);
+  nx.focus();
+}
+
+function stage2(){
+  stage=1;
+  document.getElementById('qbody').innerHTML =
+    `<div class="stem">${R[qKey].n} — ${R[qKey].stem}</div>
+     <h2>Which electrical therapy?</h2><div class="opts">`+
+    shuffle(Object.keys(TX)).map(t=>`<button class="opt" onclick="answer2('${t}')">${TX[t]}</button>`).join('')+
+    `</div>`;
+}
+
+function answer2(t){
+  asked++; const ok = t===R[qKey].tx; if(ok) right++;
+  const btns=[...document.querySelectorAll('.opt')];
+  btns.forEach(b=>{b.disabled=true;
+    if(b.textContent===TX[R[qKey].tx]) b.classList.add('right');
+    else if(b.textContent===TX[t]) b.classList.add('wrong');});
+  const v=document.createElement('div');
+  v.className='verdict'; v.setAttribute('role','status');
+  v.innerHTML=(ok?'<strong>Correct.</strong> ':`<strong>No — the answer is ${TX[R[qKey].tx].toLowerCase()}.</strong> `)
+    +TX_WHY[R[qKey].tx];
+  document.getElementById('qbody').appendChild(v);
+  const nx=document.createElement('button');
+  nx.className='btn'; nx.textContent='Next rhythm'; nx.onclick=newQ;
+  document.getElementById('qbody').appendChild(nx); nx.focus();
+  document.getElementById('score').textContent=`${right} of ${asked} correct`;
+}
+
+document.getElementById('foot').textContent =
+  'These strips are drawn to standard scale — 25 mm/s, 10 mm/mV — so intervals can be measured off the grid. '+
+  'They are idealised teaching waveforms, not recordings from patients. Real tracings carry artefact, baseline wander and beat-to-beat variation that these do not.';
+
+buildList(); notes(); draw(false);
+</script>
+</body>
+</html>
