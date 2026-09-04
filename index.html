@@ -66,9 +66,6 @@ nav.modes button[aria-selected="true"]{color:var(--ink);font-weight:500;border-b
 .notes ul{margin:0;padding-left:18px}
 .notes li{margin-bottom:6px;max-width:62ch}
 .notes p{margin:0 0 8px;max-width:62ch}
-.pill{display:inline-block;font-size:13px;padding:3px 9px;border-radius:3px;
-  background:var(--pulse-soft);color:var(--pulse);font-weight:500}
-.pill.ok{background:var(--calm-soft);color:var(--calm)}
 
 .toggle{display:inline-flex;align-items:center;gap:7px;font-size:13.5px;color:var(--ink-2);
   cursor:pointer;user-select:none;margin-bottom:14px}
@@ -89,8 +86,6 @@ nav.modes button[aria-selected="true"]{color:var(--ink);font-weight:500;border-b
   border-radius:5px;padding:10px 20px;cursor:pointer}
 .btn.ghost{background:none;color:var(--ink-2);border:1px solid var(--rule)}
 .score{font-family:var(--mono);font-size:13px;color:var(--ink-3);margin-bottom:16px}
-.stem{background:var(--card);border-left:2px solid var(--ink-3);padding:10px 14px;
-  margin:0 0 16px;font-size:14.5px;max-width:62ch}
 button:focus-visible,.opt:focus-visible,input:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 footer{margin-top:44px;padding-top:14px;border-top:1px solid var(--rule);
@@ -250,44 +245,35 @@ const R={
   f:['This is your reference. Every other strip on this page is a deviation from it.',
      'P wave upright and identical each beat; PR constant and no longer than one large square.',
      'QRS under three small squares.'],
-  c:'Nothing — but you cannot call anything abnormal until you know what this looks like.',
-  m:'None.',stem:'Comfortable, BP 128/76.',tx:'none'},
+  c:'Nothing — but you cannot call anything abnormal until you know what this looks like.',},
 
  sbrad:{n:'Sinus bradycardia',g:'Bradycardias',rate:'45/min',reg:'Regular',
   qrs:'Narrow, 0.08 s',p:'One P per QRS, PR normal',
   f:['The conduction system is intact — the sinus node is simply firing slowly.',
      'Often physiological: athletes, sleep, vagal tone.',
      'Pathological causes: beta-blockers, calcium-channel blockers, digoxin, inferior MI, hypothyroidism, hypothermia, raised intracranial pressure, hyperkalaemia.'],
-  c:'A junctional escape rhythm looks similar but has no P waves at all.',
-  m:'Nothing if asymptomatic. If symptomatic: atropine 1 mg IV, repeated to a maximum of 3 mg, then pacing.',
-  stem:'Rate 42, BP 78/44, drowsy and clammy. Atropine 3 mg has been given without effect.',tx:'pace'},
+  c:'A junctional escape rhythm looks similar but has no P waves at all.',},
 
  avb1:{n:'First-degree AV block',g:'Bradycardias',rate:'75/min',reg:'Regular',
   qrs:'Narrow, 0.08 s',p:'One P per QRS, PR 0.28 s',
   f:['PR interval longer than 0.20 s — more than one large square.',
      'Every P wave still conducts. Nothing is dropped.',
      'Benign in isolation and needs no treatment.'],
-  c:'Nothing, provided you have checked carefully that no beats are dropped. If a QRS is missing, it is second-degree block.',
-  m:'None in isolation. Review the drug chart.',
-  stem:'Asymptomatic, BP 124/70, here for a pre-operative check.',tx:'none'},
+  c:'Nothing, provided you have checked carefully that no beats are dropped. If a QRS is missing, it is second-degree block.',},
 
  mobitz1:{n:'Mobitz I (Wenckebach)',g:'Bradycardias',rate:'53/min',reg:'Regularly irregular',
   qrs:'Narrow, 0.08 s',p:'PR lengthens, then a QRS is dropped',
   f:['The PR interval gets progressively longer until a P wave fails to conduct, then the cycle restarts.',
      'Longer, longer, longer, drop — then you have a Wenckebach.',
      'The block is at the AV node. Usually benign, often responds to atropine, and rarely progresses to complete block.'],
-  c:'Mobitz II. The whole distinction is whether the PR interval lengthens before the dropped beat — measure it, do not eyeball it.',
-  m:'Observe if asymptomatic. Atropine if symptomatic.',
-  stem:'Rate 38, BP 82/50, presyncopal. Atropine has not helped.',tx:'pace'},
+  c:'Mobitz II. The whole distinction is whether the PR interval lengthens before the dropped beat — measure it, do not eyeball it.',},
 
  mobitz2:{n:'Mobitz II',g:'Bradycardias',rate:'53/min',reg:'Regularly irregular',
   qrs:'Narrow, 0.08 s',p:'PR constant, then a QRS is suddenly dropped',
   f:['The PR interval on conducted beats is constant. Then a QRS simply fails to appear, with no warning.',
      'The block is below the AV node, in the His–Purkinje system.',
      'This is the dangerous one. It progresses unpredictably to complete block and asystole, and it responds poorly to atropine.'],
-  c:'Mobitz I. Measure the PR intervals before the dropped beat — if they are identical, this is Mobitz II.',
-  m:'Pacing and cardiology involvement. Do not simply observe.',
-  stem:'Rate 40, presyncopal, BP 88/54.',tx:'pace'},
+  c:'Mobitz I. Measure the PR intervals before the dropped beat — if they are identical, this is Mobitz II.',},
 
  chb:{n:'Third-degree (complete) heart block',g:'Bradycardias',rate:'41/min ventricular, 88/min atrial',
   reg:'Regular, but P and QRS are independent',qrs:'Broad escape, 0.16 s',
@@ -296,18 +282,14 @@ const R={
      'The PR interval varies randomly because there is no relationship to vary around.',
      'A junctional escape gives a narrow QRS at 40–60/min and is relatively stable. A ventricular escape, as here, gives a broad QRS at 20–40/min and is slow and liable to fail.',
      'Common after inferior MI.'],
-  c:'A very slow Mobitz II. Look at whether the P–P and R–R intervals are each regular but unrelated — that is complete block.',
-  m:'Pacing. Atropine is unlikely to work with a broad escape rhythm.',
-  stem:'Rate 38, BP 80/48, confused.',tx:'pace'},
+  c:'A very slow Mobitz II. Look at whether the P–P and R–R intervals are each regular but unrelated — that is complete block.',},
 
  stach:{n:'Sinus tachycardia',g:'Narrow-complex tachycardias',rate:'125/min',reg:'Regular',
   qrs:'Narrow, 0.08 s',p:'One P per QRS, PR normal',
   f:['Normal P waves are visible before every QRS.',
      'In an adult the rate is usually under 150, and it varies beat-to-beat and with the clinical situation.',
      'This is a symptom, not a diagnosis. Find the cause — pain, fever, hypovolaemia, anaemia, sepsis, PE, thyrotoxicosis — and treat that.'],
-  c:'SVT. As the rate climbs towards 150 the P waves start hiding in the preceding T wave. Slow down and look for them.',
-  m:'Treat the underlying cause. Never cardiovert a compensatory sinus tachycardia.',
-  stem:'Febrile, BP 104/62, consolidation on chest X-ray.',tx:'none'},
+  c:'SVT. As the rate climbs towards 150 the P waves start hiding in the preceding T wave. Slow down and look for them.',},
 
  svt:{n:'Supraventricular tachycardia',g:'Narrow-complex tachycardias',rate:'176/min',reg:'Regular',
   qrs:'Narrow, 0.08 s',p:'None visible',
@@ -315,9 +297,7 @@ const R={
      'Metronomically regular: the R–R intervals do not vary at all.',
      'P waves are buried in the QRS or appear retrogradely as a pseudo-R\u2032 in V1 or a pseudo-S wave in the inferior leads.',
      'Onset and termination are abrupt — the patient can often tell you the exact second it started.'],
-  c:'Atrial flutter with 2:1 block, which sits at almost exactly 150. And VT, if the QRS is broad — a broad regular tachycardia is VT until proven otherwise.',
-  m:'Stable: modified Valsalva, then adenosine 6 mg by rapid push with a flush, then 12 mg. Unstable: synchronised cardioversion.',
-  stem:'BP 76/40, cold and confused. Vagal manoeuvres and adenosine have both failed.',tx:'sync'},
+  c:'Atrial flutter with 2:1 block, which sits at almost exactly 150. And VT, if the QRS is broad — a broad regular tachycardia is VT until proven otherwise.',},
 
  flutter:{n:'Atrial flutter with 2:1 conduction',g:'Narrow-complex tachycardias',
   rate:'150/min ventricular, 300/min atrial',reg:'Regular',qrs:'Narrow, 0.08 s',
@@ -325,18 +305,14 @@ const R={
   f:['A sawtooth baseline at an atrial rate of about 300, with every second impulse conducted.',
      'A regular narrow tachycardia sitting at almost exactly 150 should make you hunt for flutter waves before anything else.',
      'Adenosine will not usually terminate it, but the transient AV block it produces unmasks the flutter waves and gives you the diagnosis.'],
-  c:'SVT. The give-away is the rate pinned at 150 and the sawtooth baseline between QRS complexes.',
-  m:'Rate control and anticoagulation as for atrial fibrillation. Unstable: synchronised cardioversion.',
-  stem:'BP 84/50 with ischaemic chest pain.',tx:'sync'},
+  c:'SVT. The give-away is the rate pinned at 150 and the sawtooth baseline between QRS complexes.',},
 
  afib:{n:'Atrial fibrillation',g:'Narrow-complex tachycardias',rate:'~95/min, variable',
   reg:'Irregularly irregular',qrs:'Narrow, 0.08 s',p:'Absent; chaotic baseline',
   f:['No organised P waves anywhere, and a chaotic fibrillatory baseline.',
      'Irregularly irregular — there is no pattern to the R–R intervals at all. Measure two or three of them and compare.',
      'The commonest sustained arrhythmia you will meet, and a major source of stroke risk.'],
-  c:'Multifocal atrial tachycardia and frequent ectopics are also irregular, but both have visible P waves.',
-  m:'Rate or rhythm control, plus anticoagulation based on stroke risk. Unstable: synchronised cardioversion.',
-  stem:'New-onset AF at 165, BP 80/48, in pulmonary oedema.',tx:'sync'},
+  c:'Multifocal atrial tachycardia and frequent ectopics are also irregular, but both have visible P waves.',},
 
  vt:{n:'Monomorphic ventricular tachycardia',g:'Broad-complex and arrest rhythms',
   rate:'158/min',reg:'Regular',qrs:'Broad, 0.17 s',p:'None visible',
@@ -344,9 +320,7 @@ const R={
      'Features favouring VT over SVT with aberrancy: AV dissociation, capture beats, fusion beats, a very broad QRS, extreme axis deviation, and a history of structural heart disease or previous MI.',
      'If the complexes vary in shape it is polymorphic VT; twisting around the baseline with a long QT is torsades de pointes, treated with intravenous magnesium.',
      'VT may be with or without a pulse, and that distinction determines everything you do next.'],
-  c:'SVT with aberrancy. In an adult with cardiac risk factors, treat a broad regular tachycardia as VT — the reverse error is far more dangerous.',
-  m:'With a pulse and stable: amiodarone. With a pulse and unstable: synchronised cardioversion. Pulseless: defibrillate.',
-  stem:'The patient has a pulse. BP 82/48 with crushing chest pain.',tx:'sync'},
+  c:'SVT with aberrancy. In an adult with cardiac risk factors, treat a broad regular tachycardia as VT — the reverse error is far more dangerous.',},
 
  vf:{n:'Ventricular fibrillation',g:'Broad-complex and arrest rhythms',rate:'Not measurable',
   reg:'Chaotic',qrs:'None identifiable',p:'None',
@@ -354,18 +328,9 @@ const R={
      'Amplitude may be coarse or fine. Fine VF can be mistaken for asystole — check the gain and the leads before you call it.',
      'There is no coordinated contraction and therefore no cardiac output. VF is cardiac arrest: the patient will be unresponsive, not breathing normally, and pulseless.',
      'Time to defibrillation is the strongest single determinant of survival.'],
-  c:'Artefact from a shivering or moving patient. The difference is that a patient with artefact is talking to you.',
-  m:'High-quality CPR and immediate unsynchronised defibrillation. Adrenaline 1 mg and amiodarone 300 mg after the third shock. Hunt the 4 Hs and 4 Ts.',
-  stem:'Unresponsive, not breathing, no central pulse.',tx:'defib'}
+  c:'Artefact from a shivering or moving patient. The difference is that a patient with artefact is talking to you.',}
 };
 
-const TX={none:'No shock needed',sync:'Synchronised cardioversion',
-  defib:'Defibrillation, sync off',pace:'Pacing'};
-const TX_WHY={
- none:'This rhythm does not call for electrical therapy. Treat the patient and the underlying cause.',
- sync:'The patient has a pulse and an organised rhythm, so the shock must be timed to the R wave. An unsynchronised shock landing on a T wave can induce VF.',
- defib:'There is no organised QRS to synchronise to. Sync must be off, or the machine will charge and then refuse to discharge while it waits for an R wave that never comes.',
- pace:'The problem is too few beats, not a disorganised circuit. A shock has nothing to terminate — the ventricle needs to be driven.'};
 
 const GROUPS=['Baseline','Bradycardias','Narrow-complex tachycardias','Broad-complex and arrest rhythms'];
 const KEYS=Object.keys(R);
@@ -407,9 +372,7 @@ function notes(){
   document.getElementById('notes').innerHTML=
    `<h2>${r.n}</h2><p class="tag">${r.g}</p>
     <h3>What you are looking at</h3><ul>${r.f.map(x=>`<li>${x}</li>`).join('')}</ul>
-    <h3>What it gets confused with</h3><p>${r.c}</p>
-    <h3>Management</h3><p>${r.m}</p>
-    <p><span class="pill${r.tx==='none'?' ok':''}">${TX[r.tx]}</span></p>`;
+    <h3>What it gets confused with</h3><p>${r.c}</p>`;
 }
 
 function pick(k){ current=k; buildList(); notes(); draw(false); }
@@ -424,7 +387,7 @@ function setMode(m){
 }
 
 /* ---------- quiz ---------- */
-let asked=0, right=0, stage=0, qKey=null, opts=[];
+let asked=0, right=0, qKey=null, opts=[];
 const NEIGHBOURS={
  nsr:['sbrad','avb1','stach'], sbrad:['nsr','chb','mobitz2'],
  avb1:['nsr','mobitz1','mobitz2'], mobitz1:['mobitz2','avb1','chb'],
@@ -438,20 +401,18 @@ function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random
 
 function newQ(){
   qKey = KEYS[Math.floor(Math.random()*KEYS.length)];
-  current = qKey; stage=0;
+  current = qKey;
   opts = shuffle([qKey, ...NEIGHBOURS[qKey]]);
   draw(true); renderQ();
 }
 
 function renderQ(){
   document.getElementById('score').textContent =
-    asked ? `${right} of ${asked} correct` : 'Name the rhythm, then choose the electrical therapy.';
-  if(stage===0){
-    document.getElementById('qbody').innerHTML =
-      `<h2>What is this rhythm?</h2><div class="opts">`+
-      opts.map(k=>`<button class="opt" onclick="answer1('${k}')">${R[k].n}</button>`).join('')+
-      `</div>`;
-  }
+    asked ? `${right} of ${asked} correct` : 'Read the strip, then name the rhythm.';
+  document.getElementById('qbody').innerHTML =
+    `<h2>What is this rhythm?</h2><div class="opts">`+
+    opts.map(k=>`<button class="opt" onclick="answer1('${k}')">${R[k].n}</button>`).join('')+
+    `</div>`;
 }
 
 function answer1(k){
@@ -463,41 +424,17 @@ function answer1(k){
     else if(b.textContent===R[k].n) b.classList.add('wrong');});
   const v=document.createElement('div');
   v.className='verdict'; v.setAttribute('role','status');
-  v.innerHTML = ok
-    ? `<strong>Correct.</strong> ${R[qKey].f[0]}`
-    : `<strong>Not quite — this is ${R[qKey].n.toLowerCase()}.</strong> ${R[qKey].f[0]}`;
-  document.getElementById('qbody').appendChild(v);
-  const nx=document.createElement('button');
-  nx.className='btn'; nx.textContent='Continue'; nx.onclick=stage2;
-  document.getElementById('qbody').appendChild(nx);
-  nx.focus();
-}
-
-function stage2(){
-  stage=1;
-  document.getElementById('qbody').innerHTML =
-    `<div class="stem">${R[qKey].n} — ${R[qKey].stem}</div>
-     <h2>Which electrical therapy?</h2><div class="opts">`+
-    shuffle(Object.keys(TX)).map(t=>`<button class="opt" onclick="answer2('${t}')">${TX[t]}</button>`).join('')+
-    `</div>`;
-}
-
-function answer2(t){
-  asked++; const ok = t===R[qKey].tx; if(ok) right++;
-  const btns=[...document.querySelectorAll('.opt')];
-  btns.forEach(b=>{b.disabled=true;
-    if(b.textContent===TX[R[qKey].tx]) b.classList.add('right');
-    else if(b.textContent===TX[t]) b.classList.add('wrong');});
-  const v=document.createElement('div');
-  v.className='verdict'; v.setAttribute('role','status');
-  v.innerHTML=(ok?'<strong>Correct.</strong> ':`<strong>No — the answer is ${TX[R[qKey].tx].toLowerCase()}.</strong> `)
-    +TX_WHY[R[qKey].tx];
+  v.innerHTML = (ok ? `<strong>Correct.</strong> `
+    : `<strong>Not quite — this is ${R[qKey].n.toLowerCase()}.</strong> `)
+    + R[qKey].f[0] + ` <em>Watch out for:</em> ` + R[qKey].c;
   document.getElementById('qbody').appendChild(v);
   const nx=document.createElement('button');
   nx.className='btn'; nx.textContent='Next rhythm'; nx.onclick=newQ;
-  document.getElementById('qbody').appendChild(nx); nx.focus();
+  document.getElementById('qbody').appendChild(nx);
+  nx.focus();
   document.getElementById('score').textContent=`${right} of ${asked} correct`;
 }
+
 
 document.getElementById('foot').textContent =
   'These strips are drawn to standard scale — 25 mm/s, 10 mm/mV — so intervals can be measured off the grid. '+
