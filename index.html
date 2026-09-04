@@ -20,39 +20,60 @@
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
 body{margin:0;background:var(--page);color:var(--ink);font-family:var(--sans);
-  font-size:16px;line-height:1.6;font-weight:400}
-.wrap{max-width:1080px;margin:0 auto;padding:28px 20px 64px}
+  font-size:16px;line-height:1.6}
+.wrap{max-width:1080px;margin:0 auto;padding:26px 18px 64px}
 
-header{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 16px;margin-bottom:20px}
+header{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 16px;margin-bottom:18px}
 h1{font-size:21px;font-weight:600;margin:0;letter-spacing:-0.01em}
 header p{margin:0;color:var(--ink-2);font-size:14px}
 
+/* --- strip --- */
 .stage{background:var(--card);border:1px solid var(--rule);border-radius:6px;
-  padding:14px 14px 4px;margin-bottom:14px}
-.stage svg{display:block;width:100%;height:auto}
+  padding:12px 12px 2px;margin-bottom:10px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.stage svg{display:block;width:100%;min-width:800px;height:auto;touch-action:pan-y}
+.stage.measuring svg{touch-action:none;cursor:ew-resize}
+.hint{display:none;font-size:12.5px;color:var(--ink-3);margin:-4px 0 10px}
+@media(max-width:820px){.hint{display:block}}
 
-.readout{display:flex;flex-wrap:wrap;gap:0;border:1px solid var(--rule);
-  border-radius:6px;background:var(--card);margin-bottom:22px;overflow:hidden}
-.readout div{flex:1 1 25%;min-width:150px;padding:11px 14px;border-right:1px solid var(--rule)}
+.striptools{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;margin-bottom:14px}
+.tool{appearance:none;font:inherit;font-size:13.5px;background:var(--card);
+  border:1px solid var(--rule);border-radius:4px;padding:5px 11px;cursor:pointer;color:var(--ink-2)}
+.tool[aria-pressed="true"]{background:var(--ink);color:#fff;border-color:var(--ink)}
+.seg{display:inline-flex;border:1px solid var(--rule);border-radius:4px;overflow:hidden}
+.seg button{appearance:none;font:inherit;font-size:13.5px;background:var(--card);border:0;
+  padding:5px 11px;cursor:pointer;color:var(--ink-2);border-right:1px solid var(--rule)}
+.seg button:last-child{border-right:0}
+.seg button[aria-pressed="true"]{background:var(--ink);color:#fff}
+.calread{font-family:var(--mono);font-size:13px;color:var(--pulse)}
+.toggle{display:inline-flex;align-items:center;gap:7px;font-size:13.5px;color:var(--ink-2);
+  cursor:pointer;user-select:none}
+.toggle input{margin:0;accent-color:var(--pulse)}
+
+/* --- readout --- */
+.readout{display:flex;flex-wrap:wrap;border:1px solid var(--rule);border-radius:6px;
+  background:var(--card);margin-bottom:22px;overflow:hidden}
+.readout div{flex:1 1 20%;min-width:148px;padding:10px 13px;border-right:1px solid var(--rule)}
 .readout div:last-child{border-right:0}
 .readout dt{margin:0 0 2px;font-size:12px;color:var(--ink-3);font-weight:500}
 .readout dd{margin:0;font-size:14px;line-height:1.45}
-.readout dd.num{font-family:var(--mono);font-size:15px}
-.readout.masked dd{color:transparent;background:linear-gradient(var(--rule),var(--rule))
-  no-repeat center/100% 9px;border-radius:2px}
+.readout dd.num{font-family:var(--mono);font-size:14.5px}
+.readout div.hit{background:var(--calm-soft)}
+.readout div.miss{background:var(--pulse-soft)}
+.readout div.nopulse dd{color:var(--pulse);font-weight:500}
+.readout.masked dd{color:transparent;background:var(--rule);border-radius:2px;
+  height:11px;margin-top:5px}
 
-nav.modes{display:flex;gap:2px;border-bottom:1px solid var(--rule);margin-bottom:22px}
+nav.modes{display:flex;border-bottom:1px solid var(--rule);margin-bottom:20px}
 nav.modes button{appearance:none;background:none;border:0;border-bottom:2px solid transparent;
   font:inherit;font-size:15px;color:var(--ink-2);padding:8px 2px;margin-right:26px;cursor:pointer}
 nav.modes button[aria-selected="true"]{color:var(--ink);font-weight:500;border-bottom-color:var(--pulse)}
 
-.cols{display:grid;grid-template-columns:236px 1fr;gap:32px;align-items:start}
-@media(max-width:760px){.cols{grid-template-columns:1fr;gap:24px}}
+.cols{display:grid;grid-template-columns:230px 1fr;gap:30px;align-items:start}
+@media(max-width:760px){.cols{grid-template-columns:1fr;gap:22px}}
 
-.group{margin:0 0 18px}
-.group h2{font-size:12px;font-weight:500;color:var(--ink-3);margin:0 0 7px;letter-spacing:.01em}
+.group{margin:0 0 16px}
+.group h2{font-size:12px;font-weight:500;color:var(--ink-3);margin:0 0 6px}
 .group ul{list-style:none;margin:0;padding:0}
-.group li{margin:0 0 1px}
 .group button{appearance:none;width:100%;text-align:left;background:none;border:0;
   border-left:2px solid transparent;font:inherit;font-size:14.5px;color:var(--ink-2);
   padding:5px 10px;cursor:pointer;border-radius:0 3px 3px 0}
@@ -60,20 +81,32 @@ nav.modes button[aria-selected="true"]{color:var(--ink);font-weight:500;border-b
 .group button[aria-current="true"]{background:var(--card);border-left-color:var(--pulse);
   color:var(--ink);font-weight:500}
 
+/* --- recall --- */
+.recall{background:var(--card);border:1px solid var(--rule);border-radius:6px;padding:16px 18px}
+.recall h2{font-size:16px;font-weight:500;margin:0 0 3px}
+.recall .sub{font-size:13.5px;color:var(--ink-3);margin:0 0 16px}
+.rq{margin-bottom:15px}
+.rq p{margin:0 0 6px;font-size:14px;color:var(--ink-2)}
+.rq .row{display:flex;flex-wrap:wrap;gap:6px}
+.rq button{appearance:none;font:inherit;font-size:13.5px;background:var(--page);
+  border:1px solid var(--rule);border-radius:4px;padding:6px 11px;cursor:pointer;color:var(--ink)}
+.rq button:hover:not(:disabled){border-color:var(--ink-3)}
+.rq button[aria-pressed="true"]{background:var(--ink);color:#fff;border-color:var(--ink)}
+.rq button.right{background:var(--calm-soft);border-color:var(--calm);color:var(--calm);font-weight:500}
+.rq button.wrong{background:var(--pulse-soft);border-color:var(--pulse);color:var(--pulse)}
+.rq button:disabled{cursor:default}
+
 .notes h2{font-size:19px;font-weight:600;margin:0 0 3px;letter-spacing:-0.01em}
-.notes .tag{font-size:13px;color:var(--ink-3);margin:0 0 16px}
-.notes h3{font-size:13px;font-weight:500;color:var(--ink-3);margin:20px 0 6px}
+.notes .tag{font-size:13px;color:var(--ink-3);margin:0 0 15px}
+.notes h3{font-size:13px;font-weight:500;color:var(--ink-3);margin:19px 0 6px}
 .notes ul{margin:0;padding-left:18px}
 .notes li{margin-bottom:6px;max-width:62ch}
 .notes p{margin:0 0 8px;max-width:62ch}
 
-.toggle{display:inline-flex;align-items:center;gap:7px;font-size:13.5px;color:var(--ink-2);
-  cursor:pointer;user-select:none;margin-bottom:14px}
-.toggle input{margin:0;accent-color:var(--pulse)}
-
+/* --- quiz --- */
 .q{max-width:64ch}
-.q h2{font-size:17px;font-weight:500;margin:0 0 14px}
-.opts{display:grid;gap:8px;margin-bottom:18px}
+.q h2{font-size:17px;font-weight:500;margin:0 0 13px}
+.opts{display:grid;gap:8px;margin-bottom:16px}
 .opt{appearance:none;text-align:left;font:inherit;font-size:15px;background:var(--card);
   border:1px solid var(--rule);border-radius:5px;padding:11px 14px;cursor:pointer;color:var(--ink)}
 .opt:hover:not(:disabled){border-color:var(--ink-3)}
@@ -81,14 +114,29 @@ nav.modes button[aria-selected="true"]{color:var(--ink);font-weight:500;border-b
 .opt.right{border-color:var(--calm);background:var(--calm-soft);font-weight:500}
 .opt.wrong{border-color:var(--pulse);background:var(--pulse-soft)}
 .verdict{font-size:15px;margin:0 0 14px;max-width:62ch}
-.verdict strong{font-weight:600}
+.clin{background:var(--card);border-left:2px solid var(--ink-3);padding:9px 13px;
+  margin:0 0 14px;font-size:14.5px;max-width:62ch}
+.clin b{font-weight:600}
 .btn{appearance:none;font:inherit;font-size:15px;background:var(--ink);color:#fff;border:0;
-  border-radius:5px;padding:10px 20px;cursor:pointer}
+  border-radius:5px;padding:10px 20px;cursor:pointer;margin-right:8px}
 .btn.ghost{background:none;color:var(--ink-2);border:1px solid var(--rule)}
-.score{font-family:var(--mono);font-size:13px;color:var(--ink-3);margin-bottom:16px}
+.score{font-family:var(--mono);font-size:13px;color:var(--ink-3);margin-bottom:6px}
+.bar{height:4px;background:var(--rule);border-radius:2px;margin-bottom:20px;max-width:64ch}
+.bar span{display:block;height:100%;background:var(--pulse);border-radius:2px;transition:width .3s}
+
+.review{max-width:66ch}
+.review h2{font-size:19px;font-weight:600;margin:0 0 6px}
+.review .lead{font-size:15px;margin:0 0 20px;color:var(--ink-2)}
+.rev{background:var(--card);border:1px solid var(--rule);border-left:2px solid var(--pulse);
+  border-radius:0 5px 5px 0;padding:13px 16px;margin-bottom:10px}
+.rev h3{margin:0 0 4px;font-size:15.5px;font-weight:600}
+.rev .miss{font-family:var(--mono);font-size:12.5px;color:var(--pulse);margin:0 0 7px}
+.rev p{margin:0 0 9px;font-size:14.5px}
+.rev button{appearance:none;font:inherit;font-size:13.5px;background:none;color:var(--ink);
+  border:1px solid var(--rule);border-radius:4px;padding:5px 12px;cursor:pointer}
+
 button:focus-visible,.opt:focus-visible,input:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
-.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
-footer{margin-top:44px;padding-top:14px;border-top:1px solid var(--rule);
+footer{margin-top:42px;padding-top:14px;border-top:1px solid var(--rule);
   font-size:13px;color:var(--ink-3);max-width:70ch}
 </style>
 </head>
@@ -101,6 +149,15 @@ footer{margin-top:44px;padding-top:14px;border-top:1px solid var(--rule);
 </header>
 
 <div class="stage" id="stage"></div>
+<p class="hint">Scroll the strip sideways to read it at full size.</p>
+
+<div class="striptools">
+  <div class="seg" id="variants"></div>
+  <button class="tool" id="calbtn" aria-pressed="false" onclick="toggleCal()">Measure</button>
+  <span class="calread" id="calread"></span>
+  <label class="toggle"><input type="checkbox" id="annot" onchange="draw()"> Show measurements</label>
+</div>
+
 <dl class="readout" id="readout"></dl>
 
 <nav class="modes" role="tablist">
@@ -110,337 +167,626 @@ footer{margin-top:44px;padding-top:14px;border-top:1px solid var(--rule);
 
 <div id="learn">
   <div class="cols">
-    <div>
-      <label class="toggle"><input type="checkbox" id="annot" checked onchange="draw()"> Show measurements</label>
-      <div id="list"></div>
-    </div>
-    <div class="notes" id="notes"></div>
+    <div id="list"></div>
+    <div id="right"></div>
   </div>
 </div>
 
 <div id="quiz" hidden>
   <div class="score" id="score"></div>
-  <div class="q" id="qbody"></div>
+  <div class="bar"><span id="barfill" style="width:0"></span></div>
+  <div id="qbody"></div>
 </div>
 
 <footer id="foot"></footer>
 </div>
 
 <script>
-/* ---------- waveform engine ---------- */
+/* ============ waveform engine ============ */
 const PPS=125, PPMV=50, X0=25, YB=120, TEND=6;
-const QRS_N=[[0,0],[.015,-.06],[.045,1.25],[.07,-.22],[.09,0]];
-const QRS_S=[[0,0],[.015,-.05],[.04,.95],[.065,-.20],[.085,0]];
-const QRS_W=[[0,0],[.025,-.18],[.065,.95],[.11,-.80],[.15,-.15],[.17,0]];
-const QRS_E=[[0,0],[.03,-.20],[.075,.85],[.125,-.60],[.16,0]];
+const QRS_N =[[0,0],[.015,-.06],[.045,1.25],[.07,-.22],[.09,0]];
+const QRS_N2=[[0,0],[.015,-.05],[.045,1.05],[.072,-.30],[.095,0]];
+const QRS_S =[[0,0],[.015,-.05],[.04,.95],[.065,-.20],[.085,0]];
+const QRS_W =[[0,0],[.025,-.18],[.065,.95],[.11,-.80],[.15,-.15],[.17,0]];
+const QRS_W2=[[0,0],[.03,.28],[.08,-0.78],[.135,.36],[.17,.05],[.19,0]];
+const QRS_E =[[0,0],[.03,-.20],[.075,.85],[.125,-.60],[.16,0]];
 
 function pw(u,pts){ if(u<0||u>pts[pts.length-1][0])return 0;
   for(let i=1;i<pts.length;i++){ if(u<=pts[i][0]){ const a=pts[i-1],b=pts[i];
     return a[1]+(b[1]-a[1])*(u-a[0])/(b[0]-a[0]); } } return 0; }
 const bump=(u,d,a)=>(u<0||u>d)?0:a*Math.sin(Math.PI*u/d);
-const P=(t,a=.16,d=.09)=>({t,dur:d,f:u=>bump(u,d,a)});
-const Q=(t,p=QRS_N)=>({t,dur:p[p.length-1][0],f:u=>pw(u,p)});
+const P =(t,a=.16,d=.09)=>({t,dur:d,f:u=>bump(u,d,a)});
+const Q =(t,p=QRS_N)=>({t,dur:p[p.length-1][0],f:u=>pw(u,p)});
 const TW=(t,a=.30,d=.17)=>({t,dur:d,f:u=>bump(u,d,a)});
-function beat(c,t,pr,o={}){ const q=o.qrs||QRS_N; c.push(P(t,o.pAmp??.16));
+function beat(c,t,pr,o){ o=o||{}; const q=o.qrs||QRS_N; c.push(P(t,o.pAmp||.16));
   if(pr===null)return; const qt=t+pr; c.push(Q(qt,q));
-  c.push(TW(qt+q[q.length-1][0]+.09,o.tAmp??.30)); }
+  c.push(TW(qt+q[q.length-1][0]+.09,o.tAmp||.30)); }
 function mulberry(s){return function(){s|=0;s=s+0x6D2B79F5|0;
   let t=Math.imul(s^s>>>15,1|s);t=t+Math.imul(t^t>>>7,61|t)^t;
   return((t^t>>>14)>>>0)/4294967296;};}
+function noiseFn(seed,amp,hz){ const r=mulberry(seed),n=[];
+  for(let k=0;k<2048;k++)n.push(r()-.5);
+  return t=>{const ix=t*hz,i0=Math.floor(ix),fr=ix-i0;
+    return (n[i0%2048]*(1-fr)+n[(i0+1)%2048]*fr)*amp;}; }
 
+/* each builder takes variant index 0 or 1 */
 const B={
- nsr(){const c=[],a=[];for(let t=.18;t<TEND;t+=.80)beat(c,t,.16);
-   a.push({k:'br',t1:.98,t2:1.14,l:'PR 0.16 s'});return{c,a};},
- sbrad(){const c=[],a=[];for(let t=.25;t<TEND;t+=1.33)beat(c,t,.16);
-   a.push({k:'br',t1:1.58,t2:2.91,l:'R\u2013R 1.33 s'});return{c,a};},
- stach(){const c=[],a=[];for(let t=.15;t<TEND;t+=.48)beat(c,t,.13,{tAmp:.22});
-   a.push({k:'mk',t:1.11,l:'a P before every QRS'});return{c,a};},
- avb1(){const c=[],a=[];for(let t=.18;t<TEND;t+=.80)beat(c,t,.28);
-   a.push({k:'br',t1:.98,t2:1.26,l:'PR 0.28 s'});
-   a.push({k:'br',t1:1.78,t2:2.06,l:'PR 0.28 s'});return{c,a};},
- mobitz1(){const c=[],a=[],PP=.85,pr=[.16,.26,.36,null];let i=0;
-   for(let t=.2;t<TEND;t+=PP,i++){const p=pr[i%4];beat(c,t,p);
-     if(p!==null&&i<3)a.push({k:'br',t1:t,t2:t+p,l:p.toFixed(2)+' s'});
-     if(p===null)a.push({k:'mk',t:t,l:'P, no QRS'});}return{c,a};},
- mobitz2(){const c=[],a=[],PP=.80;let i=0;
-   for(let t=.2;t<TEND;t+=PP,i++){const d=(i%3===2);beat(c,t,d?null:.20);
+ nsr:v=>{const c=[],a=[],rr=v?0.96:0.80,pr=.16;
+   for(let t=.18;t<TEND;t+=rr)beat(c,t,pr,{tAmp:v?.26:.30});
+   a.push({k:'br',t1:.18+rr,t2:.18+rr+pr,l:'PR '+pr.toFixed(2)+' s'});
+   return{c,a};},
+
+ sbrad:v=>{const c=[],a=[],rr=v?1.58:1.33;
+   for(let t=.25;t<TEND;t+=rr)beat(c,t,.16);
+   a.push({k:'br',t1:.25+rr,t2:.25+2*rr,l:'R\u2013R '+rr.toFixed(2)+' s'});
+   return{c,a};},
+
+ stach:v=>{const c=[],a=[],rr=v?0.43:0.48;
+   for(let t=.15;t<TEND;t+=rr)beat(c,t,v?.12:.13,{tAmp:v?.18:.22});
+   a.push({k:'mk',t:.15+2*rr,l:v?'P hiding in the T wave':'a P before every QRS'});
+   return{c,a};},
+
+ avb1:v=>{const c=[],a=[],rr=v?0.92:0.80,pr=v?.36:.28;
+   for(let t=.18;t<TEND;t+=rr)beat(c,t,pr);
+   a.push({k:'br',t1:.18+rr,t2:.18+rr+pr,l:'PR '+pr.toFixed(2)+' s'});
+   a.push({k:'br',t1:.18+2*rr,t2:.18+2*rr+pr,l:'PR '+pr.toFixed(2)+' s'});
+   return{c,a};},
+
+ mobitz1:v=>{const c=[],a=[],PP=v?0.90:0.85,prs=v?[.18,.34,null]:[.16,.26,.36,null];
+   let i=0;
+   for(let t=.2;t<TEND;t+=PP,i++){const p=prs[i%prs.length];beat(c,t,p);
+     if(p!==null&&i<prs.length-1)a.push({k:'br',t1:t,t2:t+p,l:p.toFixed(2)+' s'});
+     if(p===null&&i<prs.length)a.push({k:'mk',t:t,l:'P, no QRS'});}
+   return{c,a};},
+
+ mobitz2:v=>{const c=[],a=[],PP=.80,every=v?2:3;let i=0;
+   for(let t=.2;t<TEND;t+=PP,i++){const d=(i%every===every-1);beat(c,t,d?null:.20);
      if(!d&&i<2)a.push({k:'br',t1:t,t2:t+.20,l:'0.20 s'});
-     if(d)a.push({k:'mk',t:t,l:'P, no QRS'});}return{c,a};},
- chb(){const c=[],a=[];
-   for(let t=.12;t<TEND;t+=.68)c.push(P(t,.18));
-   for(let t=.40;t<TEND;t+=1.45){c.push(Q(t,QRS_E));c.push(TW(t+.26,-.28,.20));}
-   a.push({k:'mk',t:1.48,l:'P marches through'});
-   a.push({k:'mk',t:3.29,l:'unrelated to QRS'});return{c,a};},
- svt(){const c=[],a=[];
-   for(let t=.12;t<TEND;t+=.34){c.push(Q(t,QRS_S));c.push(TW(t+.14,.20,.12));}
-   a.push({k:'br',t1:1.14,t2:1.48,l:'R\u2013R 0.34 s = 176/min'});
-   a.push({k:'mk',t:3.18,l:'no P waves seen'});return{c,a};},
- flutter(){const c=[],a=[];
-   for(let t=.05;t<TEND;t+=.20)c.push({t,dur:.20,f:u=>pw(u,[[0,.13],[.16,-.13],[.20,.13]])});
-   for(let t=.25;t<TEND;t+=.40){c.push(Q(t,QRS_S));c.push(TW(t+.145,.14,.12));}
+     if(d&&i<every)a.push({k:'mk',t:t,l:'P, no QRS'});}
+   return{c,a};},
+
+ chb:v=>{const c=[],a=[],pi=v?.60:.68,ei=v?1.37:1.62,q=v?QRS_N2:QRS_E;
+   for(let t=.12;t<TEND;t+=pi)c.push(P(t,.18));
+   for(let t=.40;t<TEND;t+=ei){c.push(Q(t,q));
+     c.push(TW(t+q[q.length-1][0]+.10,v?.22:-.28,.20));}
+   a.push({k:'mk',t:.12+2*pi,l:'P marches through'});
+   a.push({k:'mk',t:.12+5*pi,l:'unrelated to QRS'});
+   return{c,a};},
+
+ svt:v=>{const c=[],a=[],rr=v?0.29:0.34;
+   for(let t=.12;t<TEND;t+=rr){c.push(Q(t,QRS_S));c.push(TW(t+.14,.20,.12));}
+   a.push({k:'br',t1:.12+3*rr,t2:.12+4*rr,l:'R\u2013R '+rr.toFixed(2)+' s = '+Math.round(60/rr)+'/min'});
+   a.push({k:'mk',t:.12+9*rr,l:'no P waves seen'});
+   return{c,a};},
+
+ flutter:v=>{const c=[],a=[],qi=v?0.80:0.40;
+   for(let t=.05;t<TEND;t+=.20)
+     c.push({t,dur:.20,f:u=>pw(u,[[0,.13],[.16,-.13],[.20,.13]])});
+   for(let t=.25;t<TEND;t+=qi){c.push(Q(t,QRS_S));c.push(TW(t+.145,.14,.12));}
    a.push({k:'mk',t:1.05,l:'sawtooth flutter waves'});
-   a.push({k:'br',t1:2.65,t2:3.05,l:'2 F waves per QRS'});return{c,a};},
- afib(){const c=[],a=[],rr=[.55,.88,.44,.74,1.02,.50,.82,.62,.95,.58];
-   let t=.20,i=0;while(t<TEND){c.push(Q(t,QRS_N));c.push(TW(t+.18,.24));t+=rr[i%rr.length];i++;}
-   a.push({k:'br',t1:.20,t2:.75,l:'0.55 s'});
-   a.push({k:'br',t1:1.63,t2:2.65,l:'1.02 s'});
-   a.push({k:'mk',t:4.20,l:'no P waves'});
-   const r=mulberry(7),n=[];for(let k=0;k<1600;k++)n.push(r()-.5);
-   return{c,a,base:tt=>{const ix=tt*90,i0=Math.floor(ix),fr=ix-i0;
-     return (n[i0%1600]*(1-fr)+n[(i0+1)%1600]*fr)*.09+.03*Math.sin(2*Math.PI*7.3*tt);}};},
- vt(){const c=[],a=[];
-   for(let t=.10;t<TEND;t+=.38){c.push(Q(t,QRS_W));c.push(TW(t+.20,-.30,.16));}
-   a.push({k:'br',t1:.10,t2:.27,l:'QRS 0.17 s'});
-   a.push({k:'mk',t:2.76,l:'broad, regular, uniform'});return{c,a};},
- vf(){return{c:[],a:[{k:'mk',t:3.0,l:'no organised QRS'}],base:t=>{
-   const e=.72+.28*Math.sin(2*Math.PI*.9*t+.4);
-   return e*(.34*Math.sin(2*Math.PI*4.7*t)+.24*Math.sin(2*Math.PI*6.3*t+1.1)
-     +.17*Math.sin(2*Math.PI*8.9*t+2.3)+.10*Math.sin(2*Math.PI*11.9*t+.7));}};}
+   a.push({k:'br',t1:2.65,t2:2.65+qi,l:(v?4:2)+' F waves per QRS'});
+   return{c,a};},
+
+ afib:v=>{const c=[],a=[],
+   rr=v?[.36,.52,.30,.46,.60,.34,.50,.40,.56,.32]:[.55,.88,.44,.74,1.02,.50,.82,.62,.95,.58];
+   let t=.20,i=0,first=null,long=null;
+   while(t<TEND){c.push(Q(t,QRS_N));c.push(TW(t+.18,v?.18:.24));
+     if(i===0)first=[t,t+rr[0]];
+     if(i===4)long=[t,t+rr[4]];
+     t+=rr[i%rr.length];i++;}
+   a.push({k:'br',t1:first[0],t2:first[1],l:rr[0].toFixed(2)+' s'});
+   a.push({k:'br',t1:long[0],t2:long[1],l:rr[4].toFixed(2)+' s'});
+   return{c,a,base:noiseFn(v?11:7,.09,90)};},
+
+ vt:v=>{const c=[],a=[],rr=v?0.36:0.38,q=v?QRS_W2:QRS_W;
+   for(let t=.10;t<TEND;t+=rr){c.push(Q(t,q));
+     c.push(TW(t+q[q.length-1][0]+.03,v?.28:-.30,.16));}
+   a.push({k:'br',t1:.10,t2:.10+q[q.length-1][0],l:'QRS '+q[q.length-1][0].toFixed(2)+' s'});
+   a.push({k:'mk',t:.10+7*rr,l:'broad, regular, uniform'});
+   return{c,a};},
+
+ vf:v=>{const s=v?0.28:1.0;
+   return{c:[],a:[{k:'mk',t:3.0,l:v?'fine VF \u2014 easily called asystole':'no organised QRS'}],
+     base:t=>{const e=.72+.28*Math.sin(2*Math.PI*.9*t+.4);
+       return s*e*(.34*Math.sin(2*Math.PI*4.7*t)+.24*Math.sin(2*Math.PI*6.3*t+1.1)
+         +.17*Math.sin(2*Math.PI*8.9*t+2.3)+.10*Math.sin(2*Math.PI*11.9*t+.7));}};},
+
+ asystole:v=>{const c=[],a=[],n=noiseFn(23,.022,55);
+   if(v){for(let t=.35;t<TEND;t+=.95)c.push(P(t,.15));
+     a.push({k:'mk',t:.35+2*.95,l:'P waves, but no QRS at all'});}
+   else a.push({k:'mk',t:3.0,l:'no electrical activity'});
+   return{c,a,base:t=>n(t)+.012*Math.sin(2*Math.PI*.35*t)};},
+
+ pea:v=>{const c=[],a=[];
+   if(v){for(let t=.30;t<TEND;t+=1.85){c.push(Q(t,QRS_E));c.push(TW(t+.26,-.26,.20));}
+     a.push({k:'mk',t:.30+1.85,l:'slow, broad, no output'});}
+   else{for(let t=.22;t<TEND;t+=1.10)beat(c,t,.16,{tAmp:.26});
+     a.push({k:'mk',t:.22+2*1.10,l:'looks organised \u2014 but no pulse'});}
+   return{c,a};}
 };
 
-function pathFor(key){
-  const {c,base}=B[key]();let d='';
+function pathFor(key,v){
+  const b=B[key](v); const c=b.c, base=b.base; let d='';
   for(let t=0;t<=TEND;t+=.004){
-    let v=base?base(t):0;
-    for(const k of c){const u=t-k.t;if(u>=0&&u<=k.dur)v+=k.f(u);}
-    d+=(d?'L':'M')+(X0+t*PPS).toFixed(1)+' '+(YB-v*PPMV).toFixed(1)+' ';
+    let val=base?base(t):0;
+    for(const k of c){const u=t-k.t;if(u>=0&&u<=k.dur)val+=k.f(u);}
+    let y=YB-val*PPMV; if(y<22)y=22; if(y>168)y=168;
+    d+=(d?'L':'M')+(X0+t*PPS).toFixed(1)+' '+y.toFixed(1)+' ';
   }
   return d;
 }
 const xt=t=>X0+t*PPS;
 
-function stripSVG(key,showAnn){
-  const {a}=B[key](), d=pathFor(key);
+function stripSVG(key,v,showAnn){
+  const a=B[key](v).a, d=pathFor(key,v);
   let ann='';
   if(showAnn) for(const o of a){
     if(o.k==='br'){const x1=xt(o.t1),x2=xt(o.t2),m=(x1+x2)/2;
-      ann+=`<path d="M${x1} 134V172M${x2} 134V172" stroke="#9C2B2B" stroke-width=".6" stroke-dasharray="2 3" opacity=".55" fill="none"/>`
-        +`<path d="M${x1} 172v6h${(x2-x1).toFixed(1)}v-6" fill="none" stroke="#9C2B2B" stroke-width="1"/>`
-        +`<text x="${m.toFixed(1)}" y="193" text-anchor="middle" fill="#9C2B2B" font-family="IBM Plex Mono,monospace" font-size="10.5">${o.l}</text>`;
+      ann+='<path d="M'+x1+' 134V172M'+x2+' 134V172" stroke="#9C2B2B" stroke-width=".6" stroke-dasharray="2 3" opacity=".55" fill="none"/>'
+        +'<path d="M'+x1+' 172v6h'+(x2-x1).toFixed(1)+'v-6" fill="none" stroke="#9C2B2B" stroke-width="1"/>'
+        +'<text x="'+m.toFixed(1)+'" y="193" text-anchor="middle" fill="#9C2B2B" font-family="IBM Plex Mono,monospace" font-size="10.5">'+o.l+'</text>';
     } else {const x=xt(o.t);
-      ann+=`<path d="M${x} 128V178" stroke="#9C2B2B" stroke-width=".6" stroke-dasharray="2 3" opacity=".55" fill="none"/>`
-        +`<text x="${x.toFixed(1)}" y="193" text-anchor="middle" fill="#9C2B2B" font-family="IBM Plex Sans,sans-serif" font-size="11">${o.l}</text>`;}
+      ann+='<path d="M'+x+' 128V178" stroke="#9C2B2B" stroke-width=".6" stroke-dasharray="2 3" opacity=".55" fill="none"/>'
+        +'<text x="'+x.toFixed(1)+'" y="193" text-anchor="middle" fill="#9C2B2B" font-family="IBM Plex Sans,sans-serif" font-size="11">'+o.l+'</text>';}
   }
-  return `<svg viewBox="0 0 800 205" role="img" aria-label="Rhythm strip">
-<defs>
-<pattern id="sg" width="5" height="5" patternUnits="userSpaceOnUse" x="25" y="20">
-<path d="M5 0V5M0 5H5" stroke="#F2CBC6" stroke-width=".5" fill="none"/></pattern>
-<pattern id="lg" width="25" height="25" patternUnits="userSpaceOnUse" x="25" y="20">
-<path d="M25 0V25M0 25H25" stroke="#DF9A93" stroke-width="1" fill="none"/></pattern>
-</defs>
-<rect x="2" y="2" width="796" height="201" rx="4" fill="#FFFBFA" stroke="#E8DAD7"/>
-<rect x="25" y="20" width="750" height="150" fill="url(#sg)"/>
-<rect x="25" y="20" width="750" height="150" fill="url(#lg)"/>
-<rect x="25" y="20" width="750" height="150" fill="none" stroke="#DF9A93"/>
-<path id="trace" d="${d}" fill="none" stroke="#171717" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>
-${ann}
-<text x="775" y="199" text-anchor="end" fill="#B09B98" font-family="IBM Plex Mono,monospace" font-size="9.5">25 mm/s &#183; 10 mm/mV</text>
-</svg>`;
+  return '<svg id="svg" viewBox="0 0 800 205" role="img" aria-label="Rhythm strip">'
++'<defs>'
++'<pattern id="sg" width="5" height="5" patternUnits="userSpaceOnUse" x="25" y="20">'
++'<path d="M5 0V5M0 5H5" stroke="#F2CBC6" stroke-width=".5" fill="none"/></pattern>'
++'<pattern id="lg" width="25" height="25" patternUnits="userSpaceOnUse" x="25" y="20">'
++'<path d="M25 0V25M0 25H25" stroke="#DF9A93" stroke-width="1" fill="none"/></pattern>'
++'</defs>'
++'<rect x="2" y="2" width="796" height="201" rx="4" fill="#FFFBFA" stroke="#E8DAD7"/>'
++'<rect x="25" y="20" width="750" height="150" fill="url(#sg)"/>'
++'<rect x="25" y="20" width="750" height="150" fill="url(#lg)"/>'
++'<rect x="25" y="20" width="750" height="150" fill="none" stroke="#DF9A93"/>'
++'<path id="trace" d="'+d+'" fill="none" stroke="#171717" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>'
++ann
++'<g id="calg" style="display:none">'
++'<line id="c1" x1="200" y1="20" x2="200" y2="170" stroke="#1F5FA8" stroke-width="1.2"/>'
++'<line id="c2" x1="320" y1="20" x2="320" y2="170" stroke="#1F5FA8" stroke-width="1.2"/>'
++'<rect id="cband" x="200" y="20" width="120" height="150" fill="#1F5FA8" opacity=".07"/>'
++'<circle id="h1" cx="200" cy="20" r="6" fill="#1F5FA8"/>'
++'<circle id="h2" cx="320" cy="20" r="6" fill="#1F5FA8"/></g>'
++'<text x="775" y="199" text-anchor="end" fill="#B09B98" font-family="IBM Plex Mono,monospace" font-size="9.5">25 mm/s &#183; 10 mm/mV</text>'
++'</svg>';
 }
 
-/* ---------- content ---------- */
+/* ============ content ============ */
+const OPT={
+ rate:[['slow','Slow, under 60'],['normal','Normal, 60\u2013100'],['fast','Fast, over 100'],['none','No measurable rate']],
+ reg:[['regular','Regular'],['regirreg','Regularly irregular'],['irregirreg','Irregularly irregular'],['chaotic','Chaotic, or no rhythm at all']],
+ qrs:[['narrow','Narrow, under 0.12 s'],['broad','Broad, 0.12 s or more'],['none','No identifiable QRS']],
+ p:[['normal','One P per QRS, PR constant'],['varies','P waves present, not 1:1 with QRS'],['absent','No P waves']]
+};
+const ASK={rate:'What is the ventricular rate?',reg:'Is it regular?',
+  qrs:'Is the QRS narrow or broad?',p:'What are the P waves doing?'};
+
 const R={
- nsr:{n:'Normal sinus rhythm',g:'Baseline',rate:'75/min',reg:'Regular',
-  qrs:'Narrow, 0.08 s',p:'One P per QRS, PR 0.16 s',
+ nsr:{n:'Normal sinus rhythm',g:'Baseline',pulse:'Present',
+  clin:'Awake and talking. Radial pulse present.',
   f:['This is your reference. Every other strip on this page is a deviation from it.',
      'P wave upright and identical each beat; PR constant and no longer than one large square.',
      'QRS under three small squares.'],
-  c:'Nothing — but you cannot call anything abnormal until you know what this looks like.',},
+  c:'Pulseless electrical activity looks identical on the monitor. The only thing that separates them is the pulse check.',
+  v:[{r:'75/min',reg:'Regular',q:'Narrow, 0.08 s',p:'One P per QRS, PR 0.16 s',
+      k:['normal','regular','narrow','normal']},
+     {r:'62/min',reg:'Regular',q:'Narrow, 0.09 s',p:'One P per QRS, PR 0.16 s',
+      k:['normal','regular','narrow','normal']}]},
 
- sbrad:{n:'Sinus bradycardia',g:'Bradycardias',rate:'45/min',reg:'Regular',
-  qrs:'Narrow, 0.08 s',p:'One P per QRS, PR normal',
-  f:['The conduction system is intact — the sinus node is simply firing slowly.',
+ sbrad:{n:'Sinus bradycardia',g:'Bradycardias',pulse:'Present',
+  clin:'Alert. Central pulse present, slow.',
+  f:['The conduction system is intact \u2014 the sinus node is simply firing slowly.',
      'Often physiological: athletes, sleep, vagal tone.',
      'Pathological causes: beta-blockers, calcium-channel blockers, digoxin, inferior MI, hypothyroidism, hypothermia, raised intracranial pressure, hyperkalaemia.'],
-  c:'A junctional escape rhythm looks similar but has no P waves at all.',},
+  c:'A junctional escape rhythm looks similar but has no P waves at all. Complete heart block is also slow, but its P waves are unrelated to the QRS.',
+  v:[{r:'45/min',reg:'Regular',q:'Narrow, 0.08 s',p:'One P per QRS, PR normal',
+      k:['slow','regular','narrow','normal']},
+     {r:'38/min',reg:'Regular',q:'Narrow, 0.08 s',p:'One P per QRS, PR normal',
+      k:['slow','regular','narrow','normal']}]},
 
- avb1:{n:'First-degree AV block',g:'Bradycardias',rate:'75/min',reg:'Regular',
-  qrs:'Narrow, 0.08 s',p:'One P per QRS, PR 0.28 s',
-  f:['PR interval longer than 0.20 s — more than one large square.',
+ avb1:{n:'First-degree AV block',g:'Bradycardias',pulse:'Present',
+  clin:'Asymptomatic. Pulse present.',
+  f:['PR interval longer than 0.20 s \u2014 more than one large square.',
      'Every P wave still conducts. Nothing is dropped.',
-     'Benign in isolation and needs no treatment.'],
-  c:'Nothing, provided you have checked carefully that no beats are dropped. If a QRS is missing, it is second-degree block.',},
+     'The rate itself is often normal; the abnormality is the interval, not the rate.'],
+  c:'Second-degree block. Before you settle on first-degree, run your eye along the whole strip and confirm that no QRS is missing.',
+  v:[{r:'75/min',reg:'Regular',q:'Narrow, 0.08 s',p:'One P per QRS, PR 0.28 s',
+      k:['normal','regular','narrow','normal']},
+     {r:'65/min',reg:'Regular',q:'Narrow, 0.08 s',p:'One P per QRS, PR 0.36 s',
+      k:['normal','regular','narrow','normal']}]},
 
- mobitz1:{n:'Mobitz I (Wenckebach)',g:'Bradycardias',rate:'53/min',reg:'Regularly irregular',
-  qrs:'Narrow, 0.08 s',p:'PR lengthens, then a QRS is dropped',
+ mobitz1:{n:'Mobitz I (Wenckebach)',g:'Bradycardias',pulse:'Present',
+  clin:'Mildly light-headed. Pulse present.',
   f:['The PR interval gets progressively longer until a P wave fails to conduct, then the cycle restarts.',
-     'Longer, longer, longer, drop — then you have a Wenckebach.',
-     'The block is at the AV node. Usually benign, often responds to atropine, and rarely progresses to complete block.'],
-  c:'Mobitz II. The whole distinction is whether the PR interval lengthens before the dropped beat — measure it, do not eyeball it.',},
+     'Longer, longer, longer, drop \u2014 then you have a Wenckebach.',
+     'The block is at the AV node. Usually benign and rarely progresses to complete block.',
+     'The grouped beating gives a repeating pattern \u2014 regularly irregular, not chaotic.'],
+  c:'Mobitz II. The whole distinction is whether the PR lengthens before the dropped beat. Measure it; do not eyeball it.',
+  v:[{r:'53/min',reg:'Regularly irregular',q:'Narrow, 0.08 s',p:'PR lengthens, then a QRS drops (4:3)',
+      k:['slow','regirreg','narrow','varies']},
+     {r:'44/min',reg:'Regularly irregular',q:'Narrow, 0.08 s',p:'PR lengthens, then a QRS drops (3:2)',
+      k:['slow','regirreg','narrow','varies']}]},
 
- mobitz2:{n:'Mobitz II',g:'Bradycardias',rate:'53/min',reg:'Regularly irregular',
-  qrs:'Narrow, 0.08 s',p:'PR constant, then a QRS is suddenly dropped',
+ mobitz2:{n:'Mobitz II',g:'Bradycardias',pulse:'Present',
+  clin:'Presyncopal. Pulse present.',
   f:['The PR interval on conducted beats is constant. Then a QRS simply fails to appear, with no warning.',
-     'The block is below the AV node, in the His–Purkinje system.',
-     'This is the dangerous one. It progresses unpredictably to complete block and asystole, and it responds poorly to atropine.'],
-  c:'Mobitz I. Measure the PR intervals before the dropped beat — if they are identical, this is Mobitz II.',},
+     'The block is below the AV node, in the His\u2013Purkinje system.',
+     'This is the dangerous one \u2014 it progresses unpredictably to complete block and asystole.',
+     'With 2:1 conduction every other P wave is dropped, and the ventricular rhythm becomes perfectly regular. Do not let that regularity reassure you.'],
+  c:'Mobitz I. Measure the PR intervals before the dropped beat \u2014 if they are identical, this is Mobitz II.',
+  v:[{r:'50/min',reg:'Regularly irregular',q:'Narrow, 0.08 s',p:'PR constant, then a QRS drops (3:2)',
+      k:['slow','regirreg','narrow','varies']},
+     {r:'37/min',reg:'Regular',q:'Narrow, 0.08 s',p:'Two P waves per QRS (2:1)',
+      k:['slow','regular','narrow','varies']}]},
 
- chb:{n:'Third-degree (complete) heart block',g:'Bradycardias',rate:'41/min ventricular, 88/min atrial',
-  reg:'Regular, but P and QRS are independent',qrs:'Broad escape, 0.16 s',
-  p:'Present and regular, entirely unrelated to the QRS',
-  f:['Complete AV dissociation. P waves and QRS complexes are each regular but march through the strip independently of one another.',
-     'The PR interval varies randomly because there is no relationship to vary around.',
-     'A junctional escape gives a narrow QRS at 40–60/min and is relatively stable. A ventricular escape, as here, gives a broad QRS at 20–40/min and is slow and liable to fail.',
+ chb:{n:'Third-degree (complete) heart block',g:'Bradycardias',pulse:'Present',
+  clin:'Confused. Slow central pulse present.',
+  f:['Complete AV dissociation. P waves and QRS complexes are each regular but march through the strip independently.',
+     'The PR interval varies randomly, because there is no relationship for it to keep.',
+     'A junctional escape gives a narrow QRS at 40\u201360/min and is relatively stable. A ventricular escape gives a broad QRS at 20\u201340/min and is slow and liable to fail.',
      'Common after inferior MI.'],
-  c:'A very slow Mobitz II. Look at whether the P–P and R–R intervals are each regular but unrelated — that is complete block.',},
+  c:'Mobitz II with 2:1 conduction. In 2:1 block the conducted P waves keep a fixed relationship to the QRS; in complete block there is no fixed relationship anywhere on the strip.',
+  v:[{r:'37/min ventricular, 88/min atrial',reg:'Regular, but P and QRS are independent',
+      q:'Broad escape, 0.16 s',p:'Regular, entirely unrelated to the QRS',
+      k:['slow','regular','broad','varies']},
+     {r:'44/min ventricular, 100/min atrial',reg:'Regular, but P and QRS are independent',
+      q:'Narrow junctional escape, 0.09 s',p:'Regular, entirely unrelated to the QRS',
+      k:['slow','regular','narrow','varies']}]},
 
- stach:{n:'Sinus tachycardia',g:'Narrow-complex tachycardias',rate:'125/min',reg:'Regular',
-  qrs:'Narrow, 0.08 s',p:'One P per QRS, PR normal',
+ stach:{n:'Sinus tachycardia',g:'Narrow-complex tachycardias',pulse:'Present',
+  clin:'Febrile and unwell. Pulse present and fast.',
   f:['Normal P waves are visible before every QRS.',
      'In an adult the rate is usually under 150, and it varies beat-to-beat and with the clinical situation.',
-     'This is a symptom, not a diagnosis. Find the cause — pain, fever, hypovolaemia, anaemia, sepsis, PE, thyrotoxicosis — and treat that.'],
-  c:'SVT. As the rate climbs towards 150 the P waves start hiding in the preceding T wave. Slow down and look for them.',},
+     'This is a symptom, not a diagnosis. Find the cause \u2014 pain, fever, hypovolaemia, anaemia, sepsis, PE, thyrotoxicosis.'],
+  c:'SVT. As the rate climbs the P waves start hiding in the preceding T wave; look for a notch or a bump on the T that should not be there.',
+  v:[{r:'125/min',reg:'Regular',q:'Narrow, 0.08 s',p:'One P per QRS, PR normal',
+      k:['fast','regular','narrow','normal']},
+     {r:'140/min',reg:'Regular',q:'Narrow, 0.08 s',p:'P present but buried in the T wave',
+      k:['fast','regular','narrow','normal']}]},
 
- svt:{n:'Supraventricular tachycardia',g:'Narrow-complex tachycardias',rate:'176/min',reg:'Regular',
-  qrs:'Narrow, 0.08 s',p:'None visible',
-  f:['Regular, narrow and fast — typically 150–250/min.',
-     'Metronomically regular: the R–R intervals do not vary at all.',
+ svt:{n:'Supraventricular tachycardia',g:'Narrow-complex tachycardias',pulse:'Present',
+  clin:'Palpitations of sudden onset. Pulse present and fast.',
+  f:['Regular, narrow and fast \u2014 typically 150\u2013250/min.',
+     'Metronomically regular: the R\u2013R intervals do not vary at all.',
      'P waves are buried in the QRS or appear retrogradely as a pseudo-R\u2032 in V1 or a pseudo-S wave in the inferior leads.',
-     'Onset and termination are abrupt — the patient can often tell you the exact second it started.'],
-  c:'Atrial flutter with 2:1 block, which sits at almost exactly 150. And VT, if the QRS is broad — a broad regular tachycardia is VT until proven otherwise.',},
+     'Onset and termination are abrupt \u2014 the patient can often name the exact second it started.'],
+  c:'Atrial flutter with 2:1 block, which sits at almost exactly 150. And VT, if the QRS is broad.',
+  v:[{r:'176/min',reg:'Regular',q:'Narrow, 0.08 s',p:'None visible',
+      k:['fast','regular','narrow','absent']},
+     {r:'207/min',reg:'Regular',q:'Narrow, 0.08 s',p:'None visible',
+      k:['fast','regular','narrow','absent']}]},
 
- flutter:{n:'Atrial flutter with 2:1 conduction',g:'Narrow-complex tachycardias',
-  rate:'150/min ventricular, 300/min atrial',reg:'Regular',qrs:'Narrow, 0.08 s',
-  p:'Sawtooth flutter waves, two per QRS',
-  f:['A sawtooth baseline at an atrial rate of about 300, with every second impulse conducted.',
-     'A regular narrow tachycardia sitting at almost exactly 150 should make you hunt for flutter waves before anything else.',
-     'Adenosine will not usually terminate it, but the transient AV block it produces unmasks the flutter waves and gives you the diagnosis.'],
-  c:'SVT. The give-away is the rate pinned at 150 and the sawtooth baseline between QRS complexes.',},
+ flutter:{n:'Atrial flutter',g:'Narrow-complex tachycardias',pulse:'Present',
+  clin:'Palpitations. Pulse present and regular.',
+  f:['A sawtooth baseline at an atrial rate of about 300, with only a fraction of impulses conducted.',
+     'With 2:1 conduction the ventricular rate sits at almost exactly 150 \u2014 a regular narrow tachycardia at 150 should make you hunt for flutter waves before anything else.',
+     'With 4:1 conduction the rate is a perfectly normal 75, and the diagnosis is easy to walk straight past. Look at the baseline between the QRS complexes, every time.'],
+  c:'SVT when conducting 2:1, and normal sinus rhythm when conducting 4:1. The sawtooth baseline is what gives it away in both cases.',
+  v:[{r:'150/min ventricular, 300/min atrial',reg:'Regular',q:'Narrow, 0.08 s',
+      p:'Sawtooth flutter waves, two per QRS',k:['fast','regular','narrow','absent']},
+     {r:'75/min ventricular, 300/min atrial',reg:'Regular',q:'Narrow, 0.08 s',
+      p:'Sawtooth flutter waves, four per QRS',k:['normal','regular','narrow','absent']}]},
 
- afib:{n:'Atrial fibrillation',g:'Narrow-complex tachycardias',rate:'~95/min, variable',
-  reg:'Irregularly irregular',qrs:'Narrow, 0.08 s',p:'Absent; chaotic baseline',
+ afib:{n:'Atrial fibrillation',g:'Narrow-complex tachycardias',pulse:'Present',
+  clin:'Palpitations. Pulse present and irregular.',
   f:['No organised P waves anywhere, and a chaotic fibrillatory baseline.',
-     'Irregularly irregular — there is no pattern to the R–R intervals at all. Measure two or three of them and compare.',
-     'The commonest sustained arrhythmia you will meet, and a major source of stroke risk.'],
-  c:'Multifocal atrial tachycardia and frequent ectopics are also irregular, but both have visible P waves.',},
+     'Irregularly irregular \u2014 there is no pattern to the R\u2013R intervals at all. Measure two or three and compare them.',
+     'At faster rates the irregularity becomes harder to see. Slow down and measure rather than trusting your eye.'],
+  c:'Multifocal atrial tachycardia and frequent ectopics are also irregular, but both have visible P waves. At rates above 150, AF can be mistaken for SVT.',
+  v:[{r:'~95/min, variable',reg:'Irregularly irregular',q:'Narrow, 0.08 s',
+      p:'Absent; chaotic baseline',k:['normal','irregirreg','narrow','absent']},
+     {r:'~145/min, variable',reg:'Irregularly irregular',q:'Narrow, 0.08 s',
+      p:'Absent; chaotic baseline',k:['fast','irregirreg','narrow','absent']}]},
 
  vt:{n:'Monomorphic ventricular tachycardia',g:'Broad-complex and arrest rhythms',
-  rate:'158/min',reg:'Regular',qrs:'Broad, 0.17 s',p:'None visible',
+  pulse:'May be present or absent \u2014 check it',
+  clin:'Chest pain. A central pulse IS palpable.',
   f:['Broad QRS of 0.12 s or more, regular, with every complex the same shape.',
      'Features favouring VT over SVT with aberrancy: AV dissociation, capture beats, fusion beats, a very broad QRS, extreme axis deviation, and a history of structural heart disease or previous MI.',
-     'If the complexes vary in shape it is polymorphic VT; twisting around the baseline with a long QT is torsades de pointes, treated with intravenous magnesium.',
-     'VT may be with or without a pulse, and that distinction determines everything you do next.'],
-  c:'SVT with aberrancy. In an adult with cardiac risk factors, treat a broad regular tachycardia as VT — the reverse error is far more dangerous.',},
+     'The complexes may point up or down \u2014 morphology varies between patients. What matters is that they are broad, regular and identical to one another.',
+     'VT may be with or without a pulse, and that distinction determines everything you do next. The monitor cannot tell you which.'],
+  c:'SVT with aberrancy. In an adult with cardiac risk factors, treat a broad regular tachycardia as VT \u2014 the reverse error is far more dangerous.',
+  v:[{r:'158/min',reg:'Regular',q:'Broad, 0.17 s',p:'None visible',
+      k:['fast','regular','broad','absent']},
+     {r:'167/min',reg:'Regular',q:'Broad, 0.19 s',p:'None visible',
+      k:['fast','regular','broad','absent']}]},
 
- vf:{n:'Ventricular fibrillation',g:'Broad-complex and arrest rhythms',rate:'Not measurable',
-  reg:'Chaotic',qrs:'None identifiable',p:'None',
+ vf:{n:'Ventricular fibrillation',g:'Broad-complex and arrest rhythms',pulse:'Absent',
+  clin:'Unresponsive, not breathing. No pulse.',
   f:['Chaotic, disorganised electrical activity with no identifiable P waves, QRS complexes or T waves.',
-     'Amplitude may be coarse or fine. Fine VF can be mistaken for asystole — check the gain and the leads before you call it.',
-     'There is no coordinated contraction and therefore no cardiac output. VF is cardiac arrest: the patient will be unresponsive, not breathing normally, and pulseless.',
+     'Amplitude may be coarse or fine. Fine VF is low-amplitude and is easily mistaken for asystole \u2014 check the gain and the lead connections before calling a flat line.',
+     'There is no coordinated contraction and therefore no cardiac output. VF is cardiac arrest.',
      'Time to defibrillation is the strongest single determinant of survival.'],
-  c:'Artefact from a shivering or moving patient. The difference is that a patient with artefact is talking to you.',}
-};
+  c:'Asystole, when the VF is fine. And artefact from a shivering or moving patient \u2014 the difference there is that a patient with artefact is talking to you.',
+  v:[{r:'Not measurable',reg:'Chaotic',q:'None identifiable',p:'None',
+      k:['none','chaotic','none','absent']},
+     {r:'Not measurable',reg:'Chaotic',q:'None identifiable',p:'None',
+      k:['none','chaotic','none','absent']}]},
 
+ asystole:{n:'Asystole',g:'Broad-complex and arrest rhythms',pulse:'Absent',
+  clin:'Unresponsive, not breathing. No pulse.',
+  f:['A flat or near-flat line with no ventricular activity. Slight wander does not make it a rhythm.',
+     'Confirm it before you accept it: check the leads are attached, check the gain is turned up, and check in more than one lead. Fine VF and a disconnected lead both look like this.',
+     'P-wave asystole \u2014 P waves continuing with no QRS at all \u2014 is a variant worth recognising, because the atria are still going while the ventricles have stopped.'],
+  c:'Fine ventricular fibrillation, and a disconnected electrode. Both are commoner than you would like, and only one of the three is treated the same way.',
+  v:[{r:'No measurable rate',reg:'Chaotic, or no rhythm at all',q:'No identifiable QRS',
+      p:'None',k:['none','chaotic','none','absent']},
+     {r:'No ventricular rate; atrial 63/min',reg:'Chaotic, or no rhythm at all',
+      q:'No identifiable QRS',p:'P waves present, no QRS follows any of them',
+      k:['none','chaotic','none','varies']}]},
+
+ pea:{n:'Pulseless electrical activity (PEA)',g:'Broad-complex and arrest rhythms',pulse:'Absent',
+  clin:'Unresponsive, not breathing. No pulse.',
+  f:['An organised rhythm on the monitor with no palpable pulse. PEA is a clinical diagnosis, not an ECG diagnosis.',
+     'The rhythm can look like almost anything \u2014 normal sinus, a bradycardia, or a slow broad idioventricular rhythm as here.',
+     'This is the reason you feel for a pulse every single time. A reassuring screen in a pulseless patient is cardiac arrest, and it is treated as one.',
+     'It carries a reversible cause more often than any other arrest rhythm, so the 4 Hs and 4 Ts matter here above all.'],
+  c:'Every organised rhythm on this page. The strip alone cannot distinguish PEA from a perfusing rhythm \u2014 only the patient can.',
+  v:[{r:'55/min',reg:'Regular',q:'Narrow, 0.08 s',p:'One P per QRS, PR normal',
+      k:['slow','regular','narrow','normal']},
+     {r:'32/min',reg:'Regular',q:'Broad, 0.16 s',p:'None visible',
+      k:['slow','regular','broad','absent']}]}
+};
 
 const GROUPS=['Baseline','Bradycardias','Narrow-complex tachycardias','Broad-complex and arrest rhythms'];
 const KEYS=Object.keys(R);
-let current='nsr', mode='learn';
+let current='nsr', variant=0, mode='learn';
 
-/* ---------- rendering ---------- */
-function draw(blind){
-  const showAnn = !blind && document.getElementById('annot').checked;
-  document.getElementById('stage').innerHTML = stripSVG(current, showAnn);
-  const p = document.querySelector('#trace');
-  if(p && !matchMedia('(prefers-reduced-motion: reduce)').matches){
-    const L = p.getTotalLength();
-    p.style.strokeDasharray = L; p.style.strokeDashoffset = L;
-    p.animate([{strokeDashoffset:L},{strokeDashoffset:0}],
-      {duration:900,easing:'linear',fill:'forwards'});
+/* ============ strip rendering ============ */
+function draw(animate){
+  const showAnn=document.getElementById('annot').checked;
+  document.getElementById('stage').innerHTML=stripSVG(current,variant,showAnn && !quizBlind);
+  if(animate!==false){
+    const p=document.getElementById('trace');
+    if(p&&!matchMedia('(prefers-reduced-motion: reduce)').matches){
+      const L=p.getTotalLength();
+      p.style.strokeDasharray=L;p.style.strokeDashoffset=L;
+      p.animate([{strokeDashoffset:L},{strokeDashoffset:0}],
+        {duration:850,easing:'linear',fill:'forwards'});
+    }
   }
-  const r=R[current];
-  document.getElementById('readout').className = 'readout' + (blind?' masked':'');
-  document.getElementById('readout').innerHTML =
-    `<div><dt>Rate</dt><dd class="num">${r.rate}</dd></div>
-     <div><dt>Regularity</dt><dd>${r.reg}</dd></div>
-     <div><dt>QRS</dt><dd>${r.qrs}</dd></div>
-     <div><dt>P waves</dt><dd>${r.p}</dd></div>`;
+  wireCal(); if(calOn) showCal();
+  renderVariants();
 }
+
+function renderVariants(){
+  document.getElementById('variants').innerHTML=
+    [0,1].map(i=>'<button aria-pressed="'+(i===variant)+'" onclick="setVariant('+i+')">Example '+(i+1)+'</button>').join('');
+}
+function setVariant(i){ variant=i; if(mode==='learn'){resetRecall();draw();} else draw(); }
+
+function readout(state){
+  const r=R[current], vv=r.v[variant], el=document.getElementById('readout');
+  el.className='readout'+(state==='masked'?' masked':'');
+  const cls=f=>{ if(!state||state==='masked'||!recallAns[f])return '';
+    return recallAns[f]===vv.k[{rate:0,reg:1,qrs:2,p:3}[f]]?' hit':' miss'; };
+  el.innerHTML=
+   '<div class="'+cls('rate').trim()+'"><dt>Rate</dt><dd class="num">'+vv.r+'</dd></div>'+
+   '<div class="'+cls('reg').trim()+'"><dt>Regularity</dt><dd>'+vv.reg+'</dd></div>'+
+   '<div class="'+cls('qrs').trim()+'"><dt>QRS</dt><dd>'+vv.q+'</dd></div>'+
+   '<div class="'+cls('p').trim()+'"><dt>P waves</dt><dd>'+vv.p+'</dd></div>'+
+   '<div class="'+(r.pulse==='Absent'?'nopulse':'')+'"><dt>Pulse</dt><dd>'+r.pulse+'</dd></div>';
+}
+
+/* ============ calipers ============ */
+let calOn=false, calT1=1.2, calT2=2.0, dragging=null;
+function toggleCal(){ calOn=!calOn;
+  document.getElementById('calbtn').setAttribute('aria-pressed',calOn);
+  document.getElementById('stage').classList.toggle('measuring',calOn);
+  if(calOn)showCal(); else hideCal(); }
+function hideCal(){ const g=document.getElementById('calg');
+  if(g)g.style.display='none'; document.getElementById('calread').textContent=''; }
+function showCal(){ const g=document.getElementById('calg'); if(!g)return;
+  g.style.display=''; updateCal(); }
+function updateCal(){
+  const x1=xt(Math.min(calT1,calT2)), x2=xt(Math.max(calT1,calT2));
+  const set=(id,a,v)=>{const e=document.getElementById(id); if(e)e.setAttribute(a,v);};
+  set('c1','x1',x1);set('c1','x2',x1);set('c2','x1',x2);set('c2','x2',x2);
+  set('h1','cx',x1);set('h2','cx',x2);
+  set('cband','x',x1);set('cband','width',Math.max(0,x2-x1));
+  const dt=Math.abs(calT2-calT1);
+  document.getElementById('calread').textContent= dt<0.01 ? '' :
+    dt.toFixed(2)+' s  ·  '+(dt/0.04).toFixed(1)+' small squares  ·  as an R\u2013R that is '+Math.round(60/dt)+'/min';
+}
+function evT(e){ const svg=document.getElementById('svg'); const r=svg.getBoundingClientRect();
+  const x=(e.clientX-r.left)*(800/r.width);
+  return Math.max(0,Math.min(TEND,(x-X0)/PPS)); }
+function wireCal(){
+  const svg=document.getElementById('svg'); if(!svg)return;
+  svg.addEventListener('pointerdown',e=>{ if(!calOn)return;
+    const t=evT(e);
+    dragging=Math.abs(t-calT1)<Math.abs(t-calT2)?1:2;
+    if(dragging===1)calT1=t; else calT2=t;
+    updateCal(); svg.setPointerCapture(e.pointerId); e.preventDefault(); });
+  svg.addEventListener('pointermove',e=>{ if(!calOn||!dragging)return;
+    const t=evT(e); if(dragging===1)calT1=t; else calT2=t; updateCal(); e.preventDefault(); });
+  svg.addEventListener('pointerup',()=>{dragging=null;});
+  svg.addEventListener('pointercancel',()=>{dragging=null;});
+}
+
+/* ============ learn mode ============ */
+let recallAns={}, recallDone=false;
+function resetRecall(){ recallAns={}; recallDone=false; }
 
 function buildList(){
   let h='';
   for(const g of GROUPS){
-    h+=`<div class="group"><h2>${g}</h2><ul>`;
+    h+='<div class="group"><h2>'+g+'</h2><ul>';
     for(const k of KEYS) if(R[k].g===g)
-      h+=`<li><button onclick="pick('${k}')" aria-current="${k===current}">${R[k].n}</button></li>`;
+      h+='<li><button onclick="pick(\''+k+'\')" aria-current="'+(k===current)+'">'+R[k].n+'</button></li>';
     h+='</ul></div>';
   }
   document.getElementById('list').innerHTML=h;
 }
 
-function notes(){
-  const r=R[current];
-  document.getElementById('notes').innerHTML=
-   `<h2>${r.n}</h2><p class="tag">${r.g}</p>
-    <h3>What you are looking at</h3><ul>${r.f.map(x=>`<li>${x}</li>`).join('')}</ul>
-    <h3>What it gets confused with</h3><p>${r.c}</p>`;
+function renderRight(){
+  if(!recallDone){ renderRecall(); readout('masked'); }
+  else { renderNotes(); readout('marked'); }
 }
 
-function pick(k){ current=k; buildList(); notes(); draw(false); }
+function renderRecall(){
+  const fields=['rate','reg','qrs','p'];
+  let h='<div class="recall"><h2>Read the strip first</h2>'+
+    '<p class="sub">Answer all four before the values are revealed. This is the same order you will use on a real monitor.</p>';
+  for(const f of fields){
+    h+='<div class="rq"><p>'+ASK[f]+'</p><div class="row">';
+    for(const [val,label] of OPT[f])
+      h+='<button aria-pressed="'+(recallAns[f]===val)+'" onclick="setRecall(\''+f+'\',\''+val+'\')">'+label+'</button>';
+    h+='</div></div>';
+  }
+  const n=fields.filter(f=>recallAns[f]).length;
+  h+='<button class="btn" '+(n<4?'disabled style="opacity:.4"':'')+' onclick="revealRecall()">'+
+     (n<4?('Answer all four ('+n+' of 4)'):'Check my reading')+'</button></div>';
+  document.getElementById('right').innerHTML=h;
+}
+function setRecall(f,v){ recallAns[f]=v; renderRecall(); }
+
+function revealRecall(){
+  recallDone=true;
+  const vv=R[current].v[variant], fields=['rate','reg','qrs','p'];
+  renderNotes(); readout('marked');
+  const box=document.createElement('div');
+  box.className='recall'; box.style.marginBottom='20px';
+  const idx={rate:0,reg:1,qrs:2,p:3};
+  let got=0, h='<h2>Your reading</h2>';
+  for(const f of fields){
+    const ok=recallAns[f]===vv.k[idx[f]]; if(ok)got++;
+    const yours=(OPT[f].find(o=>o[0]===recallAns[f])||['',''])[1];
+    const truth=(OPT[f].find(o=>o[0]===vv.k[idx[f]])||['',''])[1];
+    h+='<div class="rq"><p>'+ASK[f]+'</p><div class="row">'+
+       '<button disabled class="'+(ok?'right':'wrong')+'">'+yours+'</button>'+
+       (ok?'':'<button disabled class="right">'+truth+'</button>')+'</div></div>';
+  }
+  h+='<p class="sub" style="margin:10px 0 0">'+got+' of 4 correct.</p>'+
+     '<button class="btn ghost" style="margin-top:10px" onclick="resetRecall();renderRight()">Read it again</button>';
+  box.innerHTML=h;
+  const right=document.getElementById('right');
+  right.insertBefore(box,right.firstChild);
+}
+
+function renderNotes(){
+  const r=R[current];
+  document.getElementById('right').innerHTML=
+   '<div class="notes"><h2>'+r.n+'</h2><p class="tag">'+r.g+'</p>'+
+   '<h3>What you are looking at</h3><ul>'+r.f.map(x=>'<li>'+x+'</li>').join('')+'</ul>'+
+   '<h3>What it gets confused with</h3><p>'+r.c+'</p></div>';
+}
+
+function pick(k){ current=k; variant=0; resetRecall(); buildList(); draw(); renderRight(); }
 
 function setMode(m){
   mode=m;
   document.getElementById('tab-learn').setAttribute('aria-selected',m==='learn');
   document.getElementById('tab-quiz').setAttribute('aria-selected',m==='quiz');
-  document.getElementById('learn').hidden = m!=='learn';
-  document.getElementById('quiz').hidden = m!=='quiz';
-  if(m==='quiz') newQ(); else { buildList(); notes(); draw(false); }
+  document.getElementById('learn').hidden=m!=='learn';
+  document.getElementById('quiz').hidden=m!=='quiz';
+  if(m==='quiz'){ quizBlind=true; newQ(); }
+  else { quizBlind=false; resetRecall(); buildList(); draw(); renderRight(); }
 }
 
-/* ---------- quiz ---------- */
-let asked=0, right=0, qKey=null, opts=[];
+/* ============ quiz ============ */
+let bag=[], stats={}, asked=0, right=0, roundN=0, qKey=null, opts=[], quizBlind=false;
+KEYS.forEach(k=>stats[k]={asked:0,wrong:0,confused:{}});
+
 const NEIGHBOURS={
- nsr:['sbrad','avb1','stach'], sbrad:['nsr','chb','mobitz2'],
+ nsr:['sbrad','avb1','pea'], sbrad:['nsr','chb','mobitz2'],
  avb1:['nsr','mobitz1','mobitz2'], mobitz1:['mobitz2','avb1','chb'],
  mobitz2:['mobitz1','chb','avb1'], chb:['mobitz2','sbrad','mobitz1'],
  stach:['svt','flutter','nsr'], svt:['flutter','stach','vt'],
- flutter:['svt','afib','stach'], afib:['flutter','svt','vt'],
- vt:['svt','vf','flutter'], vf:['vt','afib','svt']};
+ flutter:['svt','afib','nsr'], afib:['flutter','svt','vt'],
+ vt:['svt','vf','flutter'], vf:['vt','asystole','afib'],
+ asystole:['vf','pea','chb'], pea:['nsr','sbrad','asystole']};
 
 function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));
   [a[i],a[j]]=[a[j],a[i]];}return a;}
 
+function fillBag(){
+  bag=[];
+  for(const k of KEYS){ const reps=1+Math.min(2,stats[k].wrong); for(let i=0;i<reps;i++)bag.push(k); }
+  shuffle(bag); roundN=bag.length;
+}
+
 function newQ(){
-  qKey = KEYS[Math.floor(Math.random()*KEYS.length)];
-  current = qKey;
-  opts = shuffle([qKey, ...NEIGHBOURS[qKey]]);
-  draw(true); renderQ();
+  if(!bag.length) fillBag();
+  qKey=bag.pop(); current=qKey; variant=Math.random()<0.5?0:1;
+  opts=shuffle([qKey,...NEIGHBOURS[qKey]]);
+  quizBlind=true; draw(); readout('masked');
+  const done=roundN-bag.length-1;
+  document.getElementById('score').textContent=
+    asked? right+' of '+asked+' correct  ·  '+(bag.length)+' left this round'
+         : 'Read the strip, then name the rhythm.';
+  document.getElementById('barfill').style.width=(100*done/roundN).toFixed(0)+'%';
+  document.getElementById('qbody').innerHTML=
+    '<div class="q"><div class="clin"><b>At the bedside:</b> '+R[qKey].clin+'</div>'+
+    '<h2>What is this rhythm?</h2><div class="opts">'+
+    opts.map(k=>'<button class="opt" onclick="answer(\''+k+'\')">'+R[k].n+'</button>').join('')+
+    '</div></div>';
 }
 
-function renderQ(){
-  document.getElementById('score').textContent =
-    asked ? `${right} of ${asked} correct` : 'Read the strip, then name the rhythm.';
-  document.getElementById('qbody').innerHTML =
-    `<h2>What is this rhythm?</h2><div class="opts">`+
-    opts.map(k=>`<button class="opt" onclick="answer1('${k}')">${R[k].n}</button>`).join('')+
-    `</div>`;
-}
-
-function answer1(k){
-  asked++; const ok = k===qKey; if(ok) right++;
-  draw(false);
-  const btns=[...document.querySelectorAll('.opt')];
-  btns.forEach(b=>{b.disabled=true;
-    if(b.textContent===R[qKey].n) b.classList.add('right');
-    else if(b.textContent===R[k].n) b.classList.add('wrong');});
+function answer(k){
+  asked++; const ok=(k===qKey); if(ok)right++;
+  stats[qKey].asked++;
+  if(!ok){ stats[qKey].wrong++;
+    stats[qKey].confused[k]=(stats[qKey].confused[k]||0)+1; }
+  quizBlind=false; draw(false); readout('marked');
+  [...document.querySelectorAll('.opt')].forEach(b=>{b.disabled=true;
+    if(b.textContent===R[qKey].n)b.classList.add('right');
+    else if(b.textContent===R[k].n)b.classList.add('wrong');});
   const v=document.createElement('div');
   v.className='verdict'; v.setAttribute('role','status');
-  v.innerHTML = (ok ? `<strong>Correct.</strong> `
-    : `<strong>Not quite — this is ${R[qKey].n.toLowerCase()}.</strong> `)
-    + R[qKey].f[0] + ` <em>Watch out for:</em> ` + R[qKey].c;
-  document.getElementById('qbody').appendChild(v);
+  v.innerHTML=(ok?'<strong>Correct.</strong> ':'<strong>Not quite \u2014 this is '+R[qKey].n.toLowerCase()+'.</strong> ')
+    +R[qKey].f[0]+' <em>Watch out for:</em> '+R[qKey].c;
+  const body=document.querySelector('#qbody .q'); body.appendChild(v);
   const nx=document.createElement('button');
-  nx.className='btn'; nx.textContent='Next rhythm'; nx.onclick=newQ;
-  document.getElementById('qbody').appendChild(nx);
+  nx.className='btn';
+  nx.textContent=bag.length?'Next rhythm':'See your review';
+  nx.onclick=bag.length?newQ:showReview;
+  body.appendChild(nx);
+  if(bag.length){ const fin=document.createElement('button');
+    fin.className='btn ghost'; fin.textContent='Stop and review now';
+    fin.onclick=showReview; body.appendChild(fin); }
   nx.focus();
-  document.getElementById('score').textContent=`${right} of ${asked} correct`;
+  document.getElementById('score').textContent=right+' of '+asked+' correct  ·  '+bag.length+' left this round';
+  document.getElementById('barfill').style.width=(100*(roundN-bag.length)/roundN).toFixed(0)+'%';
 }
 
+function showReview(){
+  const missed=KEYS.filter(k=>stats[k].wrong>0)
+    .sort((a,b)=>stats[b].wrong-stats[a].wrong);
+  const seen=KEYS.filter(k=>stats[k].asked>0).length;
+  let h='<div class="review"><h2>Where you stand</h2>';
+  h+='<p class="lead">'+right+' of '+asked+' correct, across '+seen+' of '+KEYS.length+' rhythms.</p>';
+  if(!missed.length){
+    h+='<p class="lead">Nothing to review \u2014 you named every rhythm you saw. '+
+       'For a harder run, work through Mobitz I against Mobitz II, and fine VF against asystole, '+
+       'using the measure tool rather than your eye.</p>';
+  } else {
+    h+='<p class="lead">These are the ones to go back to, most-missed first.</p>';
+    for(const k of missed){
+      const cf=Object.keys(stats[k].confused)
+        .sort((a,b)=>stats[k].confused[b]-stats[k].confused[a]);
+      const line=cf.length? 'You called it '+cf.map(x=>R[x].n.toLowerCase()).join(', then ')+'.' : '';
+      h+='<div class="rev"><h3>'+R[k].n+'</h3>'+
+         '<p class="miss">missed '+stats[k].wrong+' of '+stats[k].asked+'. '+line+'</p>'+
+         '<p>'+R[k].c+'</p>'+
+         '<button onclick="goLearn(\''+k+'\')">Open this rhythm in Learn</button></div>';
+    }
+  }
+  h+='<div style="margin-top:18px"><button class="btn" onclick="fillBag();newQ()">Start another round</button>'+
+     '<button class="btn ghost" onclick="setMode(\'learn\')">Back to Learn</button></div></div>';
+  document.getElementById('qbody').innerHTML=h;
+  document.getElementById('barfill').style.width='100%';
+}
 
-document.getElementById('foot').textContent =
-  'These strips are drawn to standard scale — 25 mm/s, 10 mm/mV — so intervals can be measured off the grid. '+
-  'They are idealised teaching waveforms, not recordings from patients. Real tracings carry artefact, baseline wander and beat-to-beat variation that these do not.';
+function goLearn(k){ setMode('learn'); pick(k); window.scrollTo({top:0,behavior:'smooth'}); }
 
-buildList(); notes(); draw(false);
+document.getElementById('foot').textContent=
+  'Strips are drawn to standard scale \u2014 25 mm/s, 10 mm/mV \u2014 so intervals can be measured off the grid with the measure tool. '+
+  'They are idealised teaching waveforms, not recordings from patients: real tracings carry artefact, baseline wander and beat-to-beat variation that these do not. '+
+  'Your quiz progress is not saved when you close the page.';
+
+buildList(); draw(); renderRight();
 </script>
 </body>
 </html>
